@@ -1,0 +1,18 @@
+{
+    "Environment": [
+        {
+            "Name": "Dev",
+            "TenantName": "dev01.onmicrosoft.com",
+            "TenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
+            "ClientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
+            "Prefix": "CA-"
+        },
+        {
+            "Name": "Test",
+            "TenantName": "test01.onmicrosoft.com",
+            "TenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
+            "ClientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
+            "Prefix": "CA-"
+        }
+    ]
+}
