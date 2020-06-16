@@ -19,11 +19,17 @@ function New-ConditionalAccessPolicy {
         Group.Read.All
         Policy.Read.All
         Policy.ReadWrite.ConditionalAccess
+        RoleManagement.Read.Directory
         The Command automatically converts existing DisplayNames from the JSON to their ObjectIDs (GUIDs) in the targeted Tenant. 
 
         -Optional permission for automatic group creation 
         Group.Create
+
+    .Example 
+    $PolicyJson = Get-content -path <YourFile.Json> -raw
+    New-ConditionalAccessPolicy -PolicyJson $PolicyJson -Force -AccessToken $AccessToken
     #>
+
     [cmdletbinding()]
     param
     (
@@ -45,8 +51,11 @@ function New-ConditionalAccessPolicy {
     [array]$InclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.includeUsers) -accessToken $accessToken 
     [array]$ExclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.ExcludeUsers) -accessToken $accessToken 
     #Get GUIDs for the DisplayName of the Application from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionApplicationGuids = Get-UserGuidForApplicationDisplayName -GroupDisplayNames ($PolicyPs.conditions.applications.includeApplications) -accessToken $accessToken 
-    [array]$ExclusionApplicationGuids = Get-UserGuidForApplicationDisplayName -GroupDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -accessToken $accessToken 
+    [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.includeApplications) -accessToken $accessToken 
+    [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -accessToken $accessToken 
+    #Get GUIDs for the UserPrincipalNames of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
+    [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayName ($PolicyPs.conditions.users.includeRoles) -accessToken $accessToken 
+    [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
     $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
@@ -55,8 +64,10 @@ function New-ConditionalAccessPolicy {
     $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
     $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
     $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
-       
-    #Converts includeGroups and excludeGroups configuration in JSON from displayName to GUID.
+    $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
+    $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
+        
+    #Converts Powershell-Object with new Configuration back to Json
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json
    
     $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"

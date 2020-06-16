@@ -17,6 +17,10 @@ function Get-AccessToken {
 
         -Optional for automatic group creation 
         Group.Create
+
+    .example 
+    $AccessToken = Get-AccessToken -ClientID xxxx-xxxx-xxxx-xxxx -ClientSecret xxxxxxxxxxxxxxxx -TenantID xxxx-xxxx-xxxx-xxxx
+    
     #>
     
     Param(
