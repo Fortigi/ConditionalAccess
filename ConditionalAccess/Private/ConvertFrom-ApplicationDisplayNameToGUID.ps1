@@ -1,5 +1,5 @@
 function ConvertFrom-ApplicationDisplayNameToGUID {
-<#
+    <#
     .SYNOPSIS
     The ConvertFrom-ApplicationDisplayNameToGUID command uses a Token from the "Get-AccessToken" command to convert the [array]DisplayNames of applications to their respective GUIDs as they exist in the targeted AzureAD tenant. 
     
@@ -22,22 +22,27 @@ function ConvertFrom-ApplicationDisplayNameToGUID {
     #>
     param
     (
-        [Parameter(Mandatory = $true)]
-        [array]$UserUPNs,
+        [Parameter(Mandatory = $false)]
+        [array]$ApplicationDisplayNames,
         [Parameter(Mandatory = $true)]
         $accessToken 
     )
 
     [array]$ApplicationGuids = $null
 
-    if ($ApplicationDisplayNames -ne "All" -or "all") {
-        foreach ($ApplicationDisplayName in $ApplicationDisplayNames) {
+    foreach ($ApplicationDisplayName in $ApplicationDisplayNames) {
+        
+        if ($ApplicationDisplayName.ToString().ToLower() -ne "all") {
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
             If (!$ApplicationObject.value[5]) {
-                throw "User-object could not be found in AzureAD through Microsoft Graph for the displayname: $UserUPN. Check the spelling of the UPN and verify the existince of the user in the specified Tenant"
+                throw "Application: $ApplicationDisplayName specified in policy was not found."
             }  
             $ApplicationGuids += ($ApplicationObject.value.id)
+        }
+        else {
+            $ApplicationGuids = $null
+            $ApplicationGuids += "all"
         }
     }
     Return $ApplicationGuids

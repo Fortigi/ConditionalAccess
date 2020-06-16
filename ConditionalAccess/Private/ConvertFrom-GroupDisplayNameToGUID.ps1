@@ -1,7 +1,7 @@
 function ConvertFrom-GroupDisplayNameToGUID {
     param
     (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [array]$GroupDisplayNames,
         [Parameter(Mandatory = $true)]
         $accessToken,
@@ -16,11 +16,11 @@ function ConvertFrom-GroupDisplayNameToGUID {
         $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
         If (!$GroupObject.value) {
             if ($Force -ne $true ) { 
-                throw "Group-object could not be found in AzureAD through Microsoft Graph for the displayname: $GroupDisplayName. Use -Force paramater to automatically create
-                Groups from Json in AzureAD. "
+                throw "The group specified in the policy JSON could not be found in AzureAD. Group Displayname: $GroupDisplayName. Use -Force paramater to auto create groups."
             }  
             if ($Force -eq $true ) {
-                write-host "Creating $GroupDisplayName"
+                write-host "Creating Azure AD Group: $GroupDisplayName" -ForegroundColor Yellow
+                
                 #Define group JSON template
                 $GroupFile = '{
                 "description": "GrpDescription",
@@ -31,13 +31,20 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 "mailEnabled": false,
                 "mailNickname": "NotSet",
                 "securityEnabled": true
-              }'
+                }'
+
+                #Create a mailnickname
+                $MailNickName = $GroupDisplayName.Replace(" ","")
+                If ($MailNickName.Length -gt 19) {
+                    $MailNickName = $MailNickName.Substring(0,19)
+                }
+
                 #Convert GroupJSON to Powershell
                 $GroupPS = $GroupFile | ConvertFrom-Json
                 #Fill PS object with correct Displayname and Description
                 $GroupPS.displayName = $GroupDisplayName
                 $GroupPS.description = $GroupDisplayName
-                $GroupPS.mailNickname = $GroupDisplayName
+                $GroupPS.mailNickname = $MailNickName
                 $GroupPS.mailEnabled = $False
                 $GroupPS.securityEnabled = $true
                 #Convert to JSON
@@ -50,6 +57,13 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 #Fill GroupObject with the newly created group
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
                 $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" }
+
+                if ($GroupObject) {
+                    write-host "Success" -ForegroundColor Green
+                }
+                else {
+                    Throw "Error creating group."
+                }
             }
         }
         #Add ID to GroupGuids

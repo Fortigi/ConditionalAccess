@@ -18,8 +18,8 @@
             "includeUserActions": []
         },
         "users": {
-            "includeUsers": ["william@fortigi.nl"],
-            "excludeUsers": ["wim@fortigi.nl"],
+            "includeUsers": ["William@vastgoed01.onmicrosoft.com"],
+            "excludeUsers": ["wim@vastgoed01.onmicrosoft.com"],
             "includeGroups": [
                 "CA-01 - Inclusion",
                 "CA-01 - Inclusion2"
@@ -27,9 +27,11 @@
             "excludeGroups": ["CA-01 - Exclusion"],
             "includeRoles": [
                 "Company Administrator",
-                "Network Administrator"
+                "Exchange Service Administrator",
+                "SharePoint Service Administrator",
+                "Application Developer"                
             ],
-            "excludeRoles": ["Network Administrator"]
+            "excludeRoles": []
         }
     },
     "grantControls": {

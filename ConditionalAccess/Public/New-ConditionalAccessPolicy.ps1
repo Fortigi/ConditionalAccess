@@ -33,13 +33,29 @@ function New-ConditionalAccessPolicy {
     [cmdletbinding()]
     param
     (
-        [Parameter(Mandatory = $true)]
-        $PolicyJson,
-        [Parameter(Mandatory = $true)]
+        [parameter(Mandatory = $true, Position = 0, ParameterSetName = "PolicyJson")]
+        [parameter(Mandatory = $true, Position = 0, ParameterSetName = "PolicyFile")]
+        
+        [Parameter(Mandatory = $true, Position = 0)]
         $accessToken,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "PolicyJson")]
+        [ValidateNotNullOrEmpty()]
+        $PolicyJson,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "PolicyFile")]
+        [ValidateNotNullOrEmpty()]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
+        $PolicyFile,
+        
+
         [Parameter(Mandatory = $False)]
         [System.Boolean]$Force  
     )
+
+    If ($PolicyFile) {
+        $PolicyJson = Get-content -path $PolicyFile -raw
+    }
 
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
@@ -51,11 +67,11 @@ function New-ConditionalAccessPolicy {
     [array]$InclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.includeUsers) -accessToken $accessToken 
     [array]$ExclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.ExcludeUsers) -accessToken $accessToken 
     #Get GUIDs for the DisplayName of the Application from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.includeApplications) -accessToken $accessToken 
-    [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -accessToken $accessToken 
+    [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -ApplicationDisplayNames ($PolicyPs.conditions.applications.includeApplications) -accessToken $accessToken 
+    [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -ApplicationDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -accessToken $accessToken 
     #Get GUIDs for the UserPrincipalNames of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayName ($PolicyPs.conditions.users.includeRoles) -accessToken $accessToken 
-    [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
+    [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.includeRoles) -accessToken $accessToken 
+    [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
     $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
