@@ -35,14 +35,14 @@ function ConvertFrom-ApplicationDisplayNameToGUID {
         if ($ApplicationDisplayName.ToString().ToLower() -ne "all") {
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
-            If (!$ApplicationObject.value[5]) {
+            If (!$ApplicationObject.value) {
                 throw "Application: $ApplicationDisplayName specified in policy was not found."
             }  
             $ApplicationGuids += ($ApplicationObject.value.id)
         }
         else {
             $ApplicationGuids = $null
-            $ApplicationGuids += "all"
+            $ApplicationGuids += "All"
         }
     }
     Return $ApplicationGuids

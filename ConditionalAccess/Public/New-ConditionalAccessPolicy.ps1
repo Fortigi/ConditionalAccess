@@ -54,7 +54,7 @@ function New-ConditionalAccessPolicy {
     )
 
     If ($PolicyFile) {
-        $PolicyJson = Get-content -path $PolicyFile -raw
+        $PolicyJson = Get-content -path $PolicyFile -raw 
     }
 
     #Convert JSON to Powershell
@@ -74,19 +74,35 @@ function New-ConditionalAccessPolicy {
     [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
-    $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
+    if ($InclusionGroupsGuids) {
+        $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
+    }
+    if ($ExclusionGroupsGuids){
     $PolicyPs.conditions.users.excludeGroups = $ExclusionGroupsGuids
-    $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
+    }
+    if ($InclusionUsersGuids){ 
+        $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
+    }
+    if ($ExclusionUsersGuids){ 
     $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
+    }
+    if ($inclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
+    }
+    if ($ExclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
-    $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
-    $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
+    }
+    if ($InclusionRoleGuids){ 
+        $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
+    } 
+    if ($ExclusionRoleGuids){ 
+        $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
+    }
         
     #Converts Powershell-Object with new Configuration back to Json
-    $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json
-   
+    $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json -depth 3
     $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Post -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
-    $conditionalAccessPolicyResponse  
+    $conditionalAccessPolicyResponse 
 }
+

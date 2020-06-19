@@ -1,5 +1,5 @@
 {
-    "displayName": "CA-01- All Apps - All Admins - Require MFA.json",
+    "displayName": "CA-02- All Apps - All Users - Require MFA or Trusted Device",
     "createdDateTime": null,
     "modifiedDateTime": null,
     "state": "disabled",
@@ -8,7 +8,6 @@
         "signInRiskLevels": [],
         "clientAppTypes": [],
         "platforms": null,
-        "locations": null,
         "deviceStates": null,
         "applications": {
             "includeApplications": [
@@ -18,21 +17,23 @@
             "includeUserActions": []
         },
         "users": {
-            "includeUsers": ["William@poriamdev.onmicrosoft.com"],
-            "excludeUsers": ["wim@poriamdev.onmicrosoft.com"],
-            "includeGroups": [
-                "CA-01 - Inclusion",
-                "CA-01 - Inclusion2"
+            "includeUsers": [
+                "william@poriamdev.onmicrosoft.com"
             ],
-            "excludeGroups": ["CA-01 - Exclusion"],
+            "excludeUsers": [],
+            "includeGroups": [],
+            "excludeGroups": [],
             "includeRoles": [],
             "excludeRoles": []
-        }
+        },
+        "locations": null
     },
     "grantControls": {
         "operator": "OR",
         "builtInControls": [
-            "mfa"
+            "mfa",
+            "compliantDevice",
+            "domainJoinedDevice"
         ],
         "customAuthenticationFactors": [],
         "termsOfUse": []
