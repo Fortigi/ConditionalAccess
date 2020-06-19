@@ -56,15 +56,31 @@ function Set-ConditionalAccessPolicy {
     [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayName ($PolicyPs.conditions.users.includeRoles) -accessToken $accessToken 
     [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
    
-    #Convert the Displaynames in the Powershell-object to the GUIDs.  
-    $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
+     #Convert the Displaynames in the Powershell-object to the GUIDs.  
+     if ($InclusionGroupsGuids) {
+        $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
+    }
+    if ($ExclusionGroupsGuids){
     $PolicyPs.conditions.users.excludeGroups = $ExclusionGroupsGuids
-    $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
+    }
+    if ($InclusionUsersGuids){ 
+        $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
+    }
+    if ($ExclusionUsersGuids){ 
     $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
+    }
+    if ($inclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
+    }
+    if ($ExclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
-    $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
-    $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
+    }
+    if ($InclusionRoleGuids){ 
+        $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
+    } 
+    if ($ExclusionRoleGuids){ 
+        $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
+    }
     
     #Converts includeGroups and excludeGroups configuration in JSON from displayName to GUID.
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json

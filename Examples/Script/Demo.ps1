@@ -6,7 +6,7 @@ Import-Module C:\Source\VSTS\GitHub\ConditionalAccess\ConditionalAccess\Conditio
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
 
 #Get Existing Policies.. in Json Format
-$# Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $true
+# Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $true
 
 #Upload a new policy
 $File = 'C:\Source\VSTS\GitHub\ConditionalAccess\Examples\Policy\CA-02- All Apps - All Users - Require MFA or Trusted Device.json'
