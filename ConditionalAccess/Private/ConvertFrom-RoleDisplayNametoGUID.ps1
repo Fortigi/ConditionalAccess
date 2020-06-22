@@ -30,9 +30,6 @@ function ConvertFrom-RoleDisplayNametoGUID {
     $URI = "https://graph.microsoft.com/beta/directoryRoletemplates"
     $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
     [array]$Roles = $Roletemplates.value
-    
-
-    [array]$RoleDisplayNames = "All"
 
     if ($RoleDisplayNames -eq "All"){
         [array]$RoleDisplayNames = $null
