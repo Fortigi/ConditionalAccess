@@ -1,6 +1,6 @@
 
 #Run
-#Remove-Module ConditionalAccess
+Remove-Module ConditionalAccess
 Import-Module C:\Source\VSTS\GitHub\ConditionalAccess\ConditionalAccess\ConditionalAccess.psm1
 
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
@@ -15,4 +15,5 @@ $File = 'C:\Source\VSTS\GitHub\ConditionalAccess\Examples\Policy\CA-02- All Apps
 Get-ConditionalAccessPolicy -accessToken $AccessToken -all $true
 New-ConditionalAccessPolicy -accessToken $AccessToken -PolicyFile $File -Force $True 
 Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-02- All Apps - All Users - Require MFA or Trusted Device"
-
+$ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-02- All Apps - All Users - Require MFA or Trusted Device"
+$ca.conditions.users.includeRoles
