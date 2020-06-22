@@ -1,15 +1,24 @@
+#Prerequisites a ClientID + ClientSecret with the minimum following API permissions:
+#    User.Read.All
+#    Application.Read.All
+#    Group.Read.All
+#    Policy.Read.All
+#    Policy.ReadWrite.ConditionalAccess
+#    RoleManagement.Read.Directory
 
-#Run
-Remove-Module ConditionalAccess
-Import-Module C:\Source\VSTS\GitHub\ConditionalAccess\ConditionalAccess\ConditionalAccess.psm1
+#    -Optional permission for automatic group creation 
+#    Group.Create
+
+Import-Module .\ConditionalAccess\ConditionalAccess.psm1
+#Remove-Module ConditionalAccess
 
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
 
 #Get Existing Policies.. in Json Format
 # Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $true
 
-#Upload a new policy
-$File = 'C:\Source\VSTS\GitHub\ConditionalAccess\Examples\Policy\CA-02- All Apps - All Users - Require MFA or Trusted Device.json'
+#Upload a new policy, Be sure to adjust the demo file with the correct displayNames to avoid errors. 
+$File = ".\ConditionalAccess\Examples\Policy\CA-02- All Apps - All Users - Require MFA or Trusted.Json"
 #New-ConditionalAccessPolicy -accessToken $AccessToken -PolicyFile $File
 
 Get-ConditionalAccessPolicy -accessToken $AccessToken -all $true
