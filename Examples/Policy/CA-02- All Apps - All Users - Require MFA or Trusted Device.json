@@ -23,7 +23,8 @@
             "excludeUsers": [],
             "includeGroups": [],
             "excludeGroups": [],
-            "includeRoles": [],
+            "includeRoles": ["Helpdesk Administrator",
+                "Search Editor"],
             "excludeRoles": []
         },
         "locations": null
