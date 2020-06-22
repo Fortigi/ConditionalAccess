@@ -1,5 +1,5 @@
 {
-    "displayName": "CA-01- All Apps - All Admins - Require MFA.json",
+    "displayName": "CA-01- All Apps - All Admins - Require MFA",
     "createdDateTime": null,
     "modifiedDateTime": null,
     "state": "disabled",
@@ -25,7 +25,7 @@
                 "CA-01 - Inclusion2"
             ],
             "excludeGroups": ["CA-01 - Exclusion"],
-            "includeRoles": [],
+            "includeRoles": ["All"],
             "excludeRoles": []
         }
     },

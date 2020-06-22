@@ -30,6 +30,16 @@ function ConvertFrom-RoleDisplayNametoGUID {
     $URI = "https://graph.microsoft.com/beta/directoryRoletemplates"
     $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
     [array]$Roles = $Roletemplates.value
+    
+
+    [array]$RoleDisplayNames = "All"
+
+    if ($RoleDisplayNames -eq "All"){
+        [array]$RoleDisplayNames = $null
+        foreach ($Role in $Roles){
+            $RoleDisplayNames += $Role.displayName
+    }
+}
 
     #For each in Policy File stated Role (DisplayName), attempt to map ObjectIDs based on Matching DisplayNames.    
     foreach ($RoleDisplayName in $RoleDisplayNames) {

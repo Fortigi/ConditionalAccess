@@ -18,11 +18,11 @@ $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSe
 # Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $true
 
 #Upload a new policy, Be sure to adjust the demo file with the correct displayNames to avoid errors. 
-$File = ".\ConditionalAccess\Examples\Policy\CA-02- All Apps - All Users - Require MFA or Trusted.Json"
+$File = ".\Examples\Policy\CA-01- All Apps - All Admins - Require MFA.json"
 #New-ConditionalAccessPolicy -accessToken $AccessToken -PolicyFile $File
 
 Get-ConditionalAccessPolicy -accessToken $AccessToken -all $true
 New-ConditionalAccessPolicy -accessToken $AccessToken -PolicyFile $File -Force $True 
-Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-02- All Apps - All Users - Require MFA or Trusted Device"
-$ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-02- All Apps - All Users - Require MFA or Trusted Device"
+Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01- All Apps - All Admins - Require MFA"
+$ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01- All Apps - All Admins - Require MFA"
 $ca.conditions.users.includeRoles
