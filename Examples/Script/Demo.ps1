@@ -9,8 +9,8 @@
 #    -Optional permission for automatic group creation 
 #    Group.Create
 
-Import-Module .\ConditionalAccess\ConditionalAccess.psm1
 #Remove-Module ConditionalAccess
+Import-Module .\ConditionalAccess\ConditionalAccess.psm1
 
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
 
@@ -23,6 +23,5 @@ $File = ".\Examples\Policy\CA-01- All Apps - All Admins - Require MFA.json"
 
 Get-ConditionalAccessPolicy -accessToken $AccessToken -all $true
 New-ConditionalAccessPolicy -accessToken $AccessToken -PolicyFile $File -Force $True 
-Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01- All Apps - All Admins - Require MFA"
 $ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01- All Apps - All Admins - Require MFA"
-$ca.conditions.users.includeRoles
+$ca 
