@@ -4,10 +4,11 @@ function New-ConditionalAccessPolicy {
     The New-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to create a new Conditional Access Policy, using a .JSON file as input. 
     
     .Description
-        The command takes the content of the JSON file and converts it to an Powershell Object so that the data in the JSON can be correctly translated to input accepted by Graph. 
+    The command takes the content of the JSON file and converts it to an Powershell Object so that the data in the JSON can be correctly translated to input accepted by Graph. 
+    It is possible to add a file containing the Policy directly through the -PoliyFile parameter. The script will automatically convert the file to a JSON object. 
 
     In order to allow for more flexibility rolling out the exact same JSONS to different Tenants while maintaining the readability of the JSON policy files:
-    - The "DisplayNames" of "Groups" and "Applications" are automatically translated to their respective ObjectIDs (GUIDs) as they are found in the targeted Tenant in the background. 
+    - The "DisplayNames" of "Groups", Roles and "Applications" are automatically translated to their respective ObjectIDs (GUIDs) as they are found in the targeted Tenant in the background. 
     - The "UserPrincipalNames" of "Users" are automatically translated to their respective ObjectIDs (GUIDs) as they are found the targeted Tenant in the background.
 
     The -Force Paramter can be added to automatically create "Groups" based on the displayNames found in the JSON if no correlating "Groups" are found in the target tenant.  
@@ -26,8 +27,15 @@ function New-ConditionalAccessPolicy {
         Group.Create
 
     .Example 
+    #Create a new Conditional Access Policy
     $PolicyJson = Get-content -path <YourFile.Json> -raw
     New-ConditionalAccessPolicy -PolicyJson $PolicyJson -Force -AccessToken $AccessToken
+
+    #Deploy a policy set and create any non existing groups 
+    $PolicyFiles = get-childitem <your directory>
+    foreach <PolicyFile in PolicyFiles>{
+        New-ConditionalAccessPolicy -AccessToken $AccessToken -PolicyFile $PolicyFile -Force $True
+    }
     #>
 
     [cmdletbinding()]
@@ -101,6 +109,7 @@ function New-ConditionalAccessPolicy {
         
     #Converts Powershell-Object with new Configuration back to Json
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json -depth 3
+    #Create new Policy using Graph
     $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Post -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
     $conditionalAccessPolicyResponse 

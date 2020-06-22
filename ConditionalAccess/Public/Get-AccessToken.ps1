@@ -8,7 +8,7 @@ function Get-AccessToken {
     Prerequisites
     - App registered in the target Azure Active Directory
     - Valid client secret of the App
-    - The App needs to have at least the followwing Admin Consented API permissions:
+    - The App needs to have at least the followwing Admin Consented API permissions to be used for Conditional Access policies*:
         User.Read.All
         Application.Read.All
         Group.Read.All
@@ -17,12 +17,12 @@ function Get-AccessToken {
 
         -Optional for automatic group creation 
         Group.Create
+    
+    *If you want to use the Token for other purposes you can modify the permissions to your own requirements
 
     .example 
     $AccessToken = Get-AccessToken -ClientID xxxx-xxxx-xxxx-xxxx -ClientSecret xxxxxxxxxxxxxxxx -TenantID xxxx-xxxx-xxxx-xxxx
-    
     #>
-    
     Param(
         [Parameter(Mandatory = $True)]
         [System.String]$ClientId,

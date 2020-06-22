@@ -6,25 +6,16 @@ function ConvertFrom-GroupDisplayNameToGUID {
     .Description
         The command takes the array of displaynames of applications from the JSON file and checks their existence in the targeted AzureAD tenant. 
 
-    In order to allow for more flexibility rolling out the exact same JSONS to different Tenants while maintaining the readability of the JSON policy files:
-    - The "DisplayNames" of "Groups" are automatically translated to their respective ObjectIDs (GUIDs) as they are found in the targeted Tenant in the background. 
-
      Prerequisites
     - Valid Access Token with the minimum following API permissions:
         Group.Read.All
-        Policy.Read.All
-        Policy.ReadWrite.ConditionalAccess
-        RoleManagement.Read.Directory
 
         -Optional permission for automatic group creation through use of the -force parameter
-        Group.Create
-
+        Group.Create OR Group.Readwrite.All
 
     .Example 
-      
-    
-    $PolicyPS = $PolicyJson | convertFrom-Json
-    New-ConditionalAccessPolicy -PolicyJson $PolicyJson -Force -AccessToken $AccessToken
+    [array]$GroupDisplayNames = "InclusionGroup1"
+    ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames $GroupDisplayNames -Force $true -AccessToken $AccessToken
     #>
     param
     (

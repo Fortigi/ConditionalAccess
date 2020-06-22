@@ -15,6 +15,8 @@ function Remove-ConditionalAccessPolicy {
         Policy.ReadWrite.ConditionalAccess
         RoleManagement.Read.Directory
 
+    - An existing policy to delete 
+        Policy ID required for this command can be found using the "Get-ConditionalAccessPolicy" command
     #>
     [cmdletbinding()]
     param

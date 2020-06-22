@@ -1,4 +1,27 @@
 function Get-ConditionalAccessPolicy {
+        <#
+    .SYNOPSIS
+    The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant.
+    
+    .Description
+    Prerequisites
+    - App registered in the target Azure Active Directory
+    - Valid client secret of the App
+    - The App needs to have at least the followwing Admin Consented API permissions to be used for Conditional Access policies*:
+        User.Read.All
+        Application.Read.All
+        Group.Read.All
+        Policy.Read.All
+        Policy.Read.ConditionalAccess
+
+    .example 
+    #Example to get All policies
+    Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $True
+
+    #Example to get a specific policy based on DisplayName
+    $ConditionalAccessPolicyDisplayName = "CA-01- All Apps - All Admins - Require MFA"
+    Get-ConditionalAccessPolicy -AccessToken $AccessToken -DisplayName $ConditionalAccessPolicyDisplayName
+    #>
     [cmdletbinding()]
     param
     (
