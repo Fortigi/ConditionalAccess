@@ -8,7 +8,7 @@ function ConvertFrom-RoleDisplayNametoGUID {
     )
     
     [array]$RoleGuids = $null
-    
+
     #Default Roles don't show up in Graph untill they are activated / used. You do however want to be able to set them in policy even if you don't use them yet. GUIDs are always the same.
     $DefaultRolesJosn = '[
         {
