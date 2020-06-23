@@ -45,7 +45,7 @@ and choose "Yes" for default Client Type
 - Policy.Read.All
 - Policy.ReadWrite.ConditionalAccess
 - RoleManagement.Read.Directory
--Optional permission for automatic group creation:  
+- Optional permission for automatic group creation:  
     Group.Create
 7. Go to the "Certificates & secrets" Tab and create a new Secret. Be sure to save secret somewhere. 
 8. In the "Overview" of the App Registration, look for the ClientID and the Directory (tenant)ID.
