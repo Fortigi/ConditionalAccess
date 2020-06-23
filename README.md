@@ -55,6 +55,7 @@ and choose "Yes" for default Client Type
 12. Open the desired Policy .Json file of your choice and adjust the content so that the displayNames in the $File match existing DisplayNames in the Targeted Tenant. The Users in the examples will most likely not exist in your tenant and probably need to be adjusted. 
 13. After loading a valid Json in $File you can run the commands you want for the demo 
 
+### Demo tips
 You can use 
 $ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01- All Apps - All Admins - Require MFA"
 To dissect the content of the created or existing Policy of your choice. e.g. you can run:
