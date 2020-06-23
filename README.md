@@ -13,7 +13,7 @@ The module consists of several public functions and several private functions, o
 - Remove-ConditionalAccessPolicy  (to remove an existing Conditional Access Policy)
 - Set-ConditionalAccessPolicy     (to update an existing Conditional Access Policy)
 
-To be in control over Conditional Access and to be able to apply efficient and effective version control it is important that the .Json representation of the policies is readable by the people maintaining them. Since Microsoft Graph can only process GUIDs in .Json format when creating or updating Policies the issu surfaced that Microsoft Graph and the people maintaining the policies need different versions of the policy files. 
+To be in control over Conditional Access and to be able to apply efficient and effective version control, it is important that the .Json representation of the policies is readable by the people maintaining them. Since Microsoft Graph can only process GUIDs in .Json format when creating or updating Policies. The issue surfaced that Microsoft Graph and the people maintaining the policies need different versions of the policy files. 
 To achieve this, the module contains several private function.
 
 ### The private functions are:
@@ -38,7 +38,7 @@ For Risk Based Conditional Access Policies you will need an AzureAD premium p2 l
 4. Fill in a DisplayName of your choice, and choose the "Single tenant" option
 5. Go to the Authentication tab and "Add a Platform". pick the Native Client option: "https://login.microsoftonline.com/common/oauth2/nativeclient" 
 and choose "Yes" for default Client Type 
-6. Under API Permissions add the following permissions:
+6. Under API Permissions add the following permissions and grant Admin Consent:
 - User.Read.All
 - Application.Read.All
 - Group.Read.All
