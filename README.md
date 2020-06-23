@@ -8,7 +8,7 @@ The module consists of several public functions and several private functions, o
 ### The public functions are:
 - Get-AccessToken                 (to retrieve an access token used for accessing Microsoft Graph)
 - Get-ConditionalAccessPolicy     (to retrieve one or multiple Conditional Access Policies)
-- Get-ConditionalAcessPolicyFile  (to retrieve one or multiple Conditional Access Policies with a .Json file as output
+- Get-ConditionalAcessPolicyFile  (to retrieve one or multiple Conditional Access Policies with a .Json file as output)
 - New-ConditionalAccessPolicy     (to create a new Conditional Access Policy using a .Json file as input)
 - Remove-ConditionalAccessPolicy  (to remove an existing Conditional Access Policy)
 - Set-ConditionalAccessPolicy     (to update an existing Conditional Access Policy)
