@@ -47,7 +47,7 @@ and choose "Yes" for default Client Type
 - RoleManagement.Read.Directory
 - Optional permission for automatic group creation:  
     Group.Create
-7. Go to the "Certificates & secrets" Tab and create a new Secret. Be sure to save secret somewhere. 
+7. Go to the "Certificates & secrets" Tab and create a new Secret. Be sure to save the secret somewhere. 
 8. In the "Overview" of the App Registration, look for the ClientID and the Directory (tenant)ID.
 9. Go back to .\Examples\Script\Demo.ps1 fill in the variables: $ClientID, $TenantID and $ClientSecret with the information from the steps above. 
 10. Run the Import-Module .\ConditionalAccess\ConditionalAccess.psm1 command to import the module
