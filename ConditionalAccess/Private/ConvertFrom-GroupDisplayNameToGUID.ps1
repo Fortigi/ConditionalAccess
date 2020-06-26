@@ -43,26 +43,22 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 $GroupFile = '{
                 "description": "GrpDescription",
                 "displayName": "GrpDisplayName",
-                "groupTypes": [
-                  "Unified"
-                ],
                 "mailEnabled": false,
-                "mailNickname": "NotSet",
                 "securityEnabled": true
                 }'
 
                 #Create a mailnickname
-                $MailNickName = $GroupDisplayName.Replace(" ","")
-                If ($MailNickName.Length -gt 19) {
-                    $MailNickName = $MailNickName.Substring(0,19)
-                }
+                #$MailNickName = $GroupDisplayName.Replace(" ","")
+                #If ($MailNickName.Length -gt 19) {
+                #    $MailNickName = $MailNickName.Substring(0,19)
+                #}
 
                 #Convert GroupJSON to Powershell
                 $GroupPS = $GroupFile | ConvertFrom-Json
                 #Fill PS object with correct Displayname and Description
                 $GroupPS.displayName = $GroupDisplayName
                 $GroupPS.description = $GroupDisplayName
-                $GroupPS.mailNickname = $MailNickName
+                #$GroupPS.mailNickname = $MailNickName
                 $GroupPS.mailEnabled = $False
                 $GroupPS.securityEnabled = $true
                 #Convert to JSON
