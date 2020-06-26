@@ -24,11 +24,11 @@ function ConvertFrom-GroupDisplayNameToGUID {
         [Parameter(Mandatory = $true)]
         $accessToken,
         [Parameter(Mandatory = $False)]
-        [System.Boolean]$Force  
+        [System.Boolean]$CreateMissingGroups  
     )
-
-    [array]$GroupGuids = $null
     
+    [array]$GroupGuids = $null  
+
     foreach ($GroupDisplayName in $GroupDisplayNames) {
         $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
         $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
@@ -44,21 +44,22 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 "description": "GrpDescription",
                 "displayName": "GrpDisplayName",
                 "mailEnabled": false,
+                "mailNickname": "NotSet",   
                 "securityEnabled": true
                 }'
 
                 #Create a mailnickname
-                #$MailNickName = $GroupDisplayName.Replace(" ","")
-                #If ($MailNickName.Length -gt 19) {
-                #    $MailNickName = $MailNickName.Substring(0,19)
-                #}
+                $MailNickName = $GroupDisplayName.Replace(" ","")
+                If ($MailNickName.Length -gt 19) {
+                    $MailNickName = $MailNickName.Substring(0,19)
+                }
 
                 #Convert GroupJSON to Powershell
                 $GroupPS = $GroupFile | ConvertFrom-Json
                 #Fill PS object with correct Displayname and Description
                 $GroupPS.displayName = $GroupDisplayName
                 $GroupPS.description = $GroupDisplayName
-                #$GroupPS.mailNickname = $MailNickName
+                $GroupPS.mailNickname = $MailNickName
                 $GroupPS.mailEnabled = $False
                 $GroupPS.securityEnabled = $true
                 #Convert to JSON
@@ -67,7 +68,7 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
                 Invoke-RestMethod -Method Post -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $NewGroupJson -ContentType "application/json"
                 #Delay after creation
-                Start-Sleep -s 5
+                Start-Sleep -s 10
                 #Fill GroupObject with the newly created group
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
                 $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" }
@@ -81,7 +82,7 @@ function ConvertFrom-GroupDisplayNameToGUID {
             }
         }
         #Add ID to GroupGuids
-        $GroupGuids += ($GroupObject.value.id)
+        [array]$GroupGuids += ($GroupObject.value.id)
     }
     Return $GroupGuids
 }
