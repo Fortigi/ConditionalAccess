@@ -10,7 +10,7 @@ function ConvertFrom-GroupDisplayNameToGUID {
     - Valid Access Token with the minimum following API permissions:
         Group.Read.All
 
-        -Optional permission for automatic group creation through use of the -force parameter
+        -Optional permission for automatic group creation through use of the -CreateMissingGroups parameter
         Group.Create OR Group.Readwrite.All
 
     .Example 
@@ -26,17 +26,17 @@ function ConvertFrom-GroupDisplayNameToGUID {
         [Parameter(Mandatory = $False)]
         [System.Boolean]$CreateMissingGroups  
     )
-    
+
     [array]$GroupGuids = $null  
 
     foreach ($GroupDisplayName in $GroupDisplayNames) {
         $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
         $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
         If (!$GroupObject.value) {
-            if ($Force -ne $true ) { 
+            if ($CreateMissingGroups -ne $true ) { 
                 throw "The group specified in the policy JSON could not be found in AzureAD. Group Displayname: $GroupDisplayName. Use -Force paramater to auto create groups."
             }  
-            if ($Force -eq $true ) {
+            if ($CreateMissingGroups -eq $true ) {
                 write-host "Creating Azure AD Group: $GroupDisplayName" -ForegroundColor Yellow
                 
                 #Define group JSON template
