@@ -66,7 +66,7 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 $NewGroupJson = $GroupPS | ConvertTo-Json
                 #Create the group using the Json as input
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
-                Invoke-RestMethod -Method Post -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $NewGroupJson -ContentType "application/json"
+                Invoke-RestMethod -Method Post -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $NewGroupJson -ContentType "application/json" | Out-Null
                 #Delay after creation
                 Start-Sleep -s 5
                 #Fill GroupObject with the newly created group
