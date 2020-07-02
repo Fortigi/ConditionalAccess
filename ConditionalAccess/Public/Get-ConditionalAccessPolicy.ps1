@@ -18,15 +18,15 @@ function Get-ConditionalAccessPolicy {
     #Example to get All policies
     Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $True
 
-    #Example to get a specific policy based on DisplayName
+    #Example to get a specIfic policy based on DisplayName
     $ConditionalAccessPolicyDisplayName = "CA-01- All Apps - All Admins - Require MFA"
     Get-ConditionalAccessPolicy -AccessToken $AccessToken -DisplayName $ConditionalAccessPolicyDisplayName
     #>
     [cmdletbinding()]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
-        $accessToken,
+        $AccessToken,
         [Parameter(Mandatory = $false)]
         $All, 
         [Parameter(Mandatory = $false)]
@@ -34,16 +34,16 @@ function Get-ConditionalAccessPolicy {
         [Parameter(Mandatory = $false)]
         $Id 
     )
-    if ($DisplayName) {
+    If ($DisplayName) {
         #$conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=displayName eq '$DisplayName'"
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=endswith(displayName, '$DisplayName')"
     }
-    if ($Id) {
+    If ($Id) {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
     }
-    if ($All -eq $true) {
+    If ($All -eq $true) {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     }
-    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Get -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" }
+    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Get -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" }
     $conditionalAccessPolicyResponse.value    
 }

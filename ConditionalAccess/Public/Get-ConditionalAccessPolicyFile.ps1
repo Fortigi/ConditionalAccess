@@ -1,15 +1,15 @@
 function Get-ConditionalAccessPolicyFile {
     [cmdletbinding()]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
-        $accessToken,
+        $AccessToken,
         [Parameter(Mandatory = $true)]
         $DisplayName,
         [Parameter(Mandatory = $true)]
         $Path
     )
     
-    $Policy = Get-ConditionalAccessPolicy -DisplayName $DisplayName -accessToken $accessToken
+    $Policy = Get-ConditionalAccessPolicy -DisplayName $DisplayName -AccessToken $AccessToken
     $Policy | ConvertTo-Json | Out-file ($Path + "\" + $DisplayName + ".json")
 }

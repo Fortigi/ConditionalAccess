@@ -32,7 +32,7 @@ function Set-ConditionalAccessPolicy {
         [Parameter(Mandatory = $true)]
         $PolicyJson,
         [Parameter(Mandatory = $true)]
-        $accessToken,
+        $AccessToken,
         [Parameter(Mandatory = $false)]
         $Id,
         [Parameter(Mandatory = $False)]
@@ -44,17 +44,17 @@ function Set-ConditionalAccessPolicy {
     $PolicyPS = $PolicyJson | convertFrom-Json
 
     #Get GUIDs for the DisplayNames of the Groups from the Powershell-representation of the JSON, from AzureAD through use of Microsoft Graph. 
-    [array]$InclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.includeGroups) -accessToken $accessToken -CreateMissingGroups $CreateMissingGroups  
-    [array]$ExclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.excludeGroups) -accessToken $accessToken -CreateMissingGroups $CreateMissingGroups  
+    [array]$InclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.includeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups  
+    [array]$ExclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.excludeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups  
     #Get GUIDs for the UserPrincipalNames of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.includeUsers) -accessToken $accessToken 
-    [array]$ExclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.ExcludeUsers) -accessToken $accessToken 
+    [array]$InclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.includeUsers) -AccessToken $AccessToken 
+    [array]$ExclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
     #Get GUIDs for the DisplayName of the Application from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.includeApplications) -accessToken $accessToken 
-    [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -accessToken $accessToken 
+    [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.includeApplications) -AccessToken $AccessToken 
+    [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -GroupDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -AccessToken $AccessToken 
     #Get GUIDs for the UserPrincipalNames of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayName ($PolicyPs.conditions.users.includeRoles) -accessToken $accessToken 
-    [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
+    [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayName ($PolicyPs.conditions.users.includeRoles) -AccessToken $AccessToken 
+    [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -AccessToken $AccessToken 
    
      #Convert the Displaynames in the Powershell-object to the GUIDs.  
     If ($InclusionGroupsGuids) {
@@ -86,6 +86,6 @@ function Set-ConditionalAccessPolicy {
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json
 
     $ConditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
-    $ConditionalAccessPolicyResponse = Invoke-RestMethod -Method Patch -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
+    $ConditionalAccessPolicyResponse = Invoke-RestMethod -Method Patch -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
     $ConditionalAccessPolicyResponse     
 }

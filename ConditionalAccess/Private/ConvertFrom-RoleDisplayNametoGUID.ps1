@@ -16,30 +16,30 @@ function ConvertFrom-RoleDisplayNametoGUID {
     [array]$RoleDisplayNames = "Company Administrator"
     ConvertFrom-GroupDisplayNameToGUID -RoleDisplayNames $RoleDisplayNames -Force $true -AccessToken $AccessToken
     #> 
-    param
+    Param
     (
         [Parameter(Mandatory = $false)]
         [array]$RoleDisplayNames,
         [Parameter(Mandatory = $true)]
-        $accessToken 
+        $AccessToken 
     )
     #Empty role GUID array
     [array]$RoleGuids = $null
 
     #Get RoleTemplate Objects from Graph
     $URI = "https://graph.microsoft.com/beta/directoryRoletemplates"
-    $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
+    $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
     [array]$Roles = $Roletemplates.value
 
-    if ($RoleDisplayNames -eq "All"){
+    If ($RoleDisplayNames -eq "All"){
         [array]$RoleDisplayNames = $null
-        foreach ($Role in $Roles){
+        Foreach ($Role In $Roles){
             $RoleDisplayNames += $Role.displayName
     }
 }
 
     #For each in Policy File stated Role (DisplayName), attempt to map ObjectIDs based on Matching DisplayNames.    
-    foreach ($RoleDisplayName in $RoleDisplayNames) {
+    Foreach ($RoleDisplayName in $RoleDisplayNames) {
 
         #Find role in Default roles set.
         $Found = $Roles | Where-Object { $_.DisplayName -eq $RoleDisplayName }
@@ -49,9 +49,9 @@ function ConvertFrom-RoleDisplayNametoGUID {
         }
         Else {
             $URI = "https://graph.microsoft.com/beta/directoryRoles?" + '$filter' + "=displayName eq '$RoleDisplayName'"
-            $RoleObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
+            $RoleObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
             If (!$RoleObject.value) {
-                throw "Role $RoleDisplayName is not found."
+                Throw "Role $RoleDisplayName is not found."
             }
             $RoleGuids += ($RoleObject.value.id) 
         } 

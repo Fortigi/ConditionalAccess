@@ -17,27 +17,27 @@ function ConvertFrom-GroupDisplayNameToGUID {
     [array]$GroupDisplayNames = "InclusionGroup1"
     ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames $GroupDisplayNames -Force $true -AccessToken $AccessToken
     #>
-    param
+    Param
     (
         [Parameter(Mandatory = $false)]
         [array]$GroupDisplayNames,
         [Parameter(Mandatory = $true)]
-        $accessToken,
+        $AccessToken,
         [Parameter(Mandatory = $False)]
         [System.Boolean]$CreateMissingGroups  
     )
 
     [array]$GroupGuids = $null  
 
-    foreach ($GroupDisplayName in $GroupDisplayNames) {
+    Foreach ($GroupDisplayName In $GroupDisplayNames) {
         $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
-        $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } 
+        $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
         If (!$GroupObject.value) {
-            if ($CreateMissingGroups -ne $true ) { 
-                throw "The group specified in the policy JSON could not be found in AzureAD. Group Displayname: $GroupDisplayName. Use -Force paramater to auto create groups."
+            If ($CreateMissingGroups -ne $true ) { 
+                Throw "The group specified in the policy JSON could not be found in AzureAD. Group Displayname: $GroupDisplayName. Use -Force paramater to auto create groups."
             }  
-            if ($CreateMissingGroups -eq $true ) {
-                write-host "Creating Azure AD Group: $GroupDisplayName" -ForegroundColor Yellow
+            If ($CreateMissingGroups -eq $true ) {
+                Write-host "Creating Azure AD Group: $GroupDisplayName" -ForegroundColor Yellow
                 
                 #Define group JSON template
                 $GroupFile = '{
@@ -66,18 +66,18 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 $NewGroupJson = $GroupPS | ConvertTo-Json
                 #Create the group using the Json as input
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
-                Invoke-RestMethod -Method Post -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $NewGroupJson -ContentType "application/json" | Out-Null
+                Invoke-RestMethod -Method Post -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } -Body $NewGroupJson -ContentType "application/json" | Out-Null
                 #Delay after creation
                 Start-Sleep -s 5
                 #Fill GroupObject with the newly created group
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
-                $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $accessToken" }
+                $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
 
-                if ($GroupObject) {
-                    write-host "Success" -ForegroundColor Green
+                If ($GroupObject) {
+                    Write-host "Success" -ForegroundColor Green
                 }
-                else {
-                    Throw "Error creating group."
+                Else {
+                    Throw "Error creating group." 
                 }
             }
         }

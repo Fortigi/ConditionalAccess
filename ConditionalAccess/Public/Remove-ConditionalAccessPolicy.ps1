@@ -19,14 +19,14 @@ function Remove-ConditionalAccessPolicy {
         Policy ID required for this command can be found using the "Get-ConditionalAccessPolicy" command
     #>
     [cmdletbinding()]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         $Id,
         [Parameter(Mandatory = $true)]
-        $accessToken 
+        $AccessToken 
     )
     $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
-    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Delete -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" }
+    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Delete -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" }
     $conditionalAccessPolicyResponse     
 }
