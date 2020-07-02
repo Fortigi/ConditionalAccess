@@ -18,8 +18,8 @@
             "includeUserActions": []
         },
         "users": {
-            "includeUsers": ["William@poriamdev.onmicrosoft.com"],
-            "excludeUsers": ["wim@poriamdev.onmicrosoft.com"],
+            "includeUsers": ["William@fortigi.nl"],
+            "excludeUsers": ["wim@fortigi.nl"],
             "includeGroups": [
                 "CA-01 - Inclusion5099",
                 "CA-01 - Inclusion6099"
