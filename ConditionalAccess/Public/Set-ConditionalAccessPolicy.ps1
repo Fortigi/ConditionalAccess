@@ -10,7 +10,7 @@ function Set-ConditionalAccessPolicy {
     - The "DisplayNames" of "Groups" and "Applications" in the JSON are automatically translated to their respective ObjectIDs (GUIDs) as they are found in the targeted Tenant in the background. 
     - The "UserPrincipalNames" of "Users" in the JSON are automatically translated to their respective ObjectIDs (GUIDs) as they are found the targeted Tenant in the background.
 
-    The -Force Paramter can be added to automatically create "Groups" based on the displayNames found in the JSON if no correlating "Groups" are found in the target tenant.  
+    The -CreateMissingGroups Paramter can be set to $true to automatically create "Groups" based on the displayNames found in the JSON if no correlating "Groups" are found in the target tenant.  
 
     Prerequisites
     - Valid Access Token with the minimum following API permissions:
@@ -27,7 +27,7 @@ function Set-ConditionalAccessPolicy {
     #>
 
     [cmdletbinding()]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         $PolicyJson,
@@ -57,35 +57,35 @@ function Set-ConditionalAccessPolicy {
     [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplaName ($PolicyPs.conditions.users.excludeRoles) -accessToken $accessToken 
    
      #Convert the Displaynames in the Powershell-object to the GUIDs.  
-     if ($InclusionGroupsGuids) {
+    If ($InclusionGroupsGuids) {
         $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
     }
-    if ($ExclusionGroupsGuids){
+    If ($ExclusionGroupsGuids){
     $PolicyPs.conditions.users.excludeGroups = $ExclusionGroupsGuids
     }
-    if ($InclusionUsersGuids){ 
+    If ($InclusionUsersGuids){ 
         $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
     }
-    if ($ExclusionUsersGuids){ 
+    If ($ExclusionUsersGuids){ 
     $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
     }
-    if ($inclusionApplicationGuids){ 
+    If ($inclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
     }
-    if ($ExclusionApplicationGuids){ 
+    If ($ExclusionApplicationGuids){ 
     $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
     }
-    if ($InclusionRoleGuids){ 
+    If ($InclusionRoleGuids){ 
         $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
     } 
-    if ($ExclusionRoleGuids){ 
+    If ($ExclusionRoleGuids){ 
         $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
     }
     
     #Converts includeGroups and excludeGroups configuration in JSON from displayName to GUID.
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json
 
-    $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
-    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Patch -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
-    $conditionalAccessPolicyResponse     
+    $ConditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
+    $ConditionalAccessPolicyResponse = Invoke-RestMethod -Method Patch -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $accessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
+    $ConditionalAccessPolicyResponse     
 }
