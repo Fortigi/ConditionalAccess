@@ -24,20 +24,37 @@ function ConvertFrom-ApplicationDisplayNameToGUID {
 
     [array]$ApplicationGuids = $null
 
+    #$ApplicationDisplayNames = "Microsoft Azure Management"
+
     Foreach ($ApplicationDisplayName In $ApplicationDisplayNames) {
-        
-        If ($ApplicationDisplayName.ToString().ToLower() -ne "all") {
+        $DontSearchGraph = $null
+
+        Switch ($ApplicationDisplayName.ToString().ToLower()){
+            "office 365" {
+                $DontSearchGraph += 1
+                $ApplicationGuids += "Office365"; Break
+                
+            }
+            "all" {
+                $DontSearchGraph += 1
+                $ApplicationGuids = $null
+                $ApplicationGuids += "All"; Break
+            }
+            "microsoft azure management" {
+                $DontSearchGraph += 1
+                $ApplicationGuids += "797f4846-ba00-4fd7-ba43-dac1f8f63013"; Break
+            }
+        }
+
+        If (!$DontSearchGraph){
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
             If (!$ApplicationObject.value) {
                 Throw "Application: $ApplicationDisplayName specified in policy was not found."
             }  
-            $ApplicationGuids += ($ApplicationObject.value.id)
-        }
-        Else {
-            $ApplicationGuids = $null
-            $ApplicationGuids += "All"
+            $ApplicationGuids += ($ApplicationObject.value.appId)
         }
     }
     Return $ApplicationGuids
 }
+
