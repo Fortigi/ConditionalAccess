@@ -16,7 +16,6 @@ Import-Module .\ConditionalAccess\ConditionalAccess.psm1 -Force
 #$ClientId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 #$ClientSecret = "aA_aAaa12A1A1aaAa_a~aAA_1A-AAaaaaaaa" 
 
-
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
 
 #Get Existing Policies.. in Json Format
@@ -35,9 +34,9 @@ $ca.conditions.applications.includeApplications
 Remove-ConditionalAccessPolicy -Id "9ff72528-ca35-4852-a81f-4125db958e88" -AccessToken $AccessToken
 #>
 
-Get-ConditionalAccessPolicy -accessToken $AccessToken -All $true -ConvertGUIDs $False
+#Get-ConditionalAccessPolicy -accessToken $AccessToken
 
-
+Get-ConditionalAccessPolicyFile -AccessToken $AccessToken -Path ".\Examples\Policy\A" #-ConvertGUIDs $False
 
 
 

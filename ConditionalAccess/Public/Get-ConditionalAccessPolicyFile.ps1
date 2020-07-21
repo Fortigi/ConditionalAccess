@@ -5,17 +5,23 @@ function Get-ConditionalAccessPolicyFile {
         [Parameter(Mandatory = $true)]
         $AccessToken,
         [Parameter(Mandatory = $true)]
-        $DisplayName,
-        [Parameter(Mandatory = $true)]
         $Path,
         [Parameter(Mandatory = $false)]
-        $All, 
+        $Id = $false,
         [Parameter(Mandatory = $false)]
-        $Id 
+        $DisplayName = $false,
+        [Parameter(Mandatory = $false)]
+        $ConvertGUIDs = $true
+        
     )
     
-    [Array]$Policies = Get-ConditionalAccessPolicy -DisplayName $DisplayName -AccessToken $AccessToken -All $All -Id $Id
+    [Array]$Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -DisplayName $DisplayName -Id $Id -ConvertGUIDs $ConvertGUIDs
 
-
-    $Policy.conditions.applications.includeApplications | ConvertTo-Json | Out-file ($Path + "\" + $DisplayName + ".json")
+    Foreach ($Policy in $Policies) {
+        
+        #Check for characters that can't be used in filenames
+        $FileName = ($Policy.displayName + ".json").Replace(":","").Replace("\","")
+        $Json = $Policy | ConvertTo-Json 
+        $Json | Out-file ($Path + "\" + $FileName)
+        }
 }

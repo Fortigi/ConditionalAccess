@@ -32,29 +32,34 @@ function ConvertFrom-ApplicationGUIDToDIsplayName {
         Switch ($ApplicationGuid.ToString().ToLower()){
             "office365" {
                 $DontSearchGraph += 1
-                $ApplicationGuids += "Office 365"; Break
+                $ApplicationDisplayNames += "Office 365"; Break
                 
             }
             "all" {
                 $DontSearchGraph += 1
                 $ApplicationGuids = $null
-                $ApplicationGuids += "All"; Break
+                $ApplicationDisplayNames += "All"; Break
             }
             "797f4846-ba00-4fd7-ba43-dac1f8f63013" {
                 $DontSearchGraph += 1
-                $ApplicationGuids += "Microsoft Azure Management"; Break
+                $ApplicationDisplayNames += "Microsoft Azure Management"; Break
             }
         }
 
         If (!$DontSearchGraph){
-            $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
+            $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=appId eq '$ApplicationGuid'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            
+            #$URI = "https://graph.microsoft.com/beta/ServicePrincipals"
+            #$ApplicationObjects = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            #$ApplicationObject = $ApplicationObjects | Where-Object {$_.appId -eq $ApplicationGuid}
+
             If (!$ApplicationObject.value) {
-                Throw "Application: $ApplicationDisplayName specified in policy was not found."
+                Throw "Application: $ApplicationGuid specified in policy was not found."
             }  
-            $ApplicationGuids += ($ApplicationObject.value.appId)
+            $ApplicationDisplayNames += ($ApplicationObject.value.displayName)
         }
     }
-    Return $ApplicationGuids
+    Return $ApplicationDisplayNames
 }
 

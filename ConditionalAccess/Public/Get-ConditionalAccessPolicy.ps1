@@ -28,22 +28,20 @@ function Get-ConditionalAccessPolicy {
         [Parameter(Mandatory = $true)]
         $AccessToken,
         [Parameter(Mandatory = $false)]
-        $All, 
+        $Id = $false,
         [Parameter(Mandatory = $false)]
-        $DisplayName,
-        [Parameter(Mandatory = $false)]
-        $Id,
+        $DisplayName = $false,
         [Parameter(Mandatory = $false)]
         $ConvertGUIDs = $True  
     )
 
-    If ($DisplayName) {
-        $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=endswith(displayName, '$DisplayName')"
-    }
     If ($Id) {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies/{$Id}"
     }
-    If ($All -eq $true) {
+    ElseIf ($DisplayName) {
+        $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=endswith(displayName, '$DisplayName')"
+    }
+    Else {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     }
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Get -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" }
@@ -56,12 +54,9 @@ function Get-ConditionalAccessPolicy {
         #User GUIDs to UPS
 
         #Application GUIDs to DisplayName
-        [Array]$InclusionApplicationDisplayNames = $null
-        [Array]$ExclusionApplicationDisplayNames = $null
-
         Foreach ($Policy in $Policies){
-            $InclusionApplicationDisplayNames += ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
-            $ExclusionApplicationDisplayNames += ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
+            [Array]$InclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
+            [Array]$ExclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
             If ($InclusionApplicationDisplayNames){ 
                 $Policy.conditions.applications.includeApplications = $InclusionApplicationDisplayNames
                 }
@@ -74,10 +69,9 @@ function Get-ConditionalAccessPolicy {
 
 
     }
-    Else {
-        #If ConvertGUIDs set to false.
-        return $Policies
-    }
+   
+    return $Policies
+   
 
 
 }
