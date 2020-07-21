@@ -12,14 +12,15 @@
         "deviceStates": null,
         "applications": {
             "includeApplications": [
-                "All"
+                "Office 365",
+                "Microsoft Azure Management"
             ],
             "excludeApplications": [],
             "includeUserActions": []
         },
         "users": {
-            "includeUsers": ["William@fortigi.nl"],
-            "excludeUsers": ["wim@fortigi.nl"],
+            "includeUsers": ["William@poriamdev.onmicrosoft.com"],
+            "excludeUsers": ["wim@poriamdev.onmicrosoft.com"],
             "includeGroups": [
                 "CA-01 - Inclusion5099",
                 "CA-01 - Inclusion6099"

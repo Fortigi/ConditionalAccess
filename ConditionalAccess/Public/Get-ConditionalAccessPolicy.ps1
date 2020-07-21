@@ -32,10 +32,12 @@ function Get-ConditionalAccessPolicy {
         [Parameter(Mandatory = $false)]
         $DisplayName,
         [Parameter(Mandatory = $false)]
-        $Id 
+        $Id,
+        [Parameter(Mandatory = $false)]
+        $ConvertGUIDs = $True  
     )
+
     If ($DisplayName) {
-        #$conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=displayName eq '$DisplayName'"
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies?`$filter=endswith(displayName, '$DisplayName')"
     }
     If ($Id) {
@@ -45,5 +47,38 @@ function Get-ConditionalAccessPolicy {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     }
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Get -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" }
-    $conditionalAccessPolicyResponse.value    
+    
+    [Array]$Policies = $conditionalAccessPolicyResponse.value    
+
+    If ($ConvertGUIDs -eq $True) {
+
+        #Groups GUIDS to DisplayName
+        #User GUIDs to UPS
+
+        #Application GUIDs to DisplayName
+        [Array]$InclusionApplicationDisplayNames = $null
+        [Array]$ExclusionApplicationDisplayNames = $null
+
+        Foreach ($Policy in $Policies){
+            $InclusionApplicationDisplayNames += ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
+            $ExclusionApplicationDisplayNames += ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
+            If ($InclusionApplicationDisplayNames){ 
+                $Policy.conditions.applications.includeApplications = $InclusionApplicationDisplayNames
+                }
+            If ($ExclusionApplicationDisplayNames){ 
+                $Policy.conditions.applications.excludeApplications = $ExclusionApplicationDisplayNames
+            }
+        }
+
+        #Role GUIDs to DisplayName
+
+
+    }
+    Else {
+        #If ConvertGUIDs set to false.
+        return $Policies
+    }
+
+
 }
+
