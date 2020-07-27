@@ -30,22 +30,25 @@ function ConvertFrom-ApplicationDisplayNameToGUID {
         $DontSearchGraph = $null
 
         Switch ($ApplicationDisplayName.ToString().ToLower()){
+            #"Office365" is the represetation of the "Office 365 (preview)" Object in the GUI for Conditional Access through the Azure Portal. Static Converted is required as no object exists in the directory.
             "office 365" {
                 $DontSearchGraph += 1
                 $ApplicationGuids += "Office365"; Break
                 
             }
+            #"All" is the represetation all Apps both in and outside of the directory. Static Converted is required as no (single) object exists in the directory.
             "all" {
                 $DontSearchGraph += 1
                 $ApplicationGuids = $null
                 $ApplicationGuids += "All"; Break
             }
+            #The GUID for "Microsoft Azure Management" as found in the GUI for Conditional Access through the Azure Portal does not exist in the Directory, as it contains several applications and portals in one. Static Converted is necessary.
             "microsoft azure management" {
                 $DontSearchGraph += 1
                 $ApplicationGuids += "797f4846-ba00-4fd7-ba43-dac1f8f63013"; Break
             }
         }
-
+        #If none of the staticly Converted GUIDs are triggered, search in Graph. 
         If (!$DontSearchGraph){
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
