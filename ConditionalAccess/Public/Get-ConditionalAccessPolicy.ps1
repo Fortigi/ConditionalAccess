@@ -57,12 +57,20 @@ function Get-ConditionalAccessPolicy {
         Foreach ($Policy in $Policies){
             [Array]$InclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
             [Array]$ExclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
+            [array]$InclusionGroupsDisplayNames = ConvertFrom-GroupGuidToDisplayName -GroupGuids ($Policy.conditions.users.includeGroups) -AccessToken $AccessToken
+            [array]$ExclusionGroupsDisplayNames = ConvertFrom-GroupGuidToDisplayName -GroupGuids ($Policy.conditions.users.excludeGroups) -AccessToken $AccessToken
             If ($InclusionApplicationDisplayNames){ 
                 $Policy.conditions.applications.includeApplications = $InclusionApplicationDisplayNames
                 }
             If ($ExclusionApplicationDisplayNames){ 
                 $Policy.conditions.applications.excludeApplications = $ExclusionApplicationDisplayNames
             }
+            If ($InclusionGroupsDisplayNames) {
+                $Policy.conditions.users.includeGroups = $InclusionGroupsDisplayNames
+                }
+            If ($ExclusionGroupsDisplayNames){
+                $Policy.conditions.users.excludeGroups = $ExclusionGroupsDisplayNames
+                }
         }
 
         #Role GUIDs to DisplayName
