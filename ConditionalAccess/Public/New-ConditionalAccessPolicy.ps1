@@ -55,18 +55,27 @@ function New-ConditionalAccessPolicy {
         [ValidateNotNullOrEmpty()]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         $PolicyFile,
-        
+        [Parameter(Mandatory = $False)]
+        [System.Boolean]$CreateMissingGroups,  
 
         [Parameter(Mandatory = $False)]
-        [System.Boolean]$CreateMissingGroups  
+        [System.Boolean]$TestOnly = $False
     )
 
     If ($PolicyFile) {
         $PolicyJson = Get-content -path $PolicyFile -raw 
     }
-    
+
+    if ($TestOnly -eq $True){
+        if ($CreateMissingGroups -eq $true){
+            Throw "Combination of CreateMissingGroup Parameter and TestOnly Parameter cannot both be true."
+        }
+        
+    }
+
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
+    
     
     
     #Get GUIDs for the DisplayNames of the Groups from the Powershell-representation of the JSON, from AzureAD through use of Microsoft Graph. 
@@ -122,9 +131,12 @@ function New-ConditionalAccessPolicy {
     #Converts Powershell-Object with new Configuration back to Json
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json -depth 3
     #Create new Policy using Graph
+    If($TestOnly -eq $False){
     $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Post -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
     $conditionalAccessPolicyResponse 
+    }
+    Else{Write-Warning -Message ("TestOnly was set, Policy: "+$PolicyPs.displayName+ " was not created. If no error was shown, Policy would have been succesfully created.")}
 }
 
 
