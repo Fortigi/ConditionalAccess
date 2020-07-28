@@ -64,7 +64,8 @@ function New-ConditionalAccessPolicy {
     If ($PolicyFile) {
         $PolicyJson = Get-content -path $PolicyFile -raw 
     }
-
+    
+    $PolicyJSON = Get-Content -Path "C:\Source\VSTS\GitHub\ConditionalAccess\Examples\Policy\A\CA-01- All Apps - All Admins - Require MFA.json"
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
     
@@ -84,30 +85,41 @@ function New-ConditionalAccessPolicy {
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
     If ($InclusionGroupsGuids) {
-    $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
+        $PolicyPs.conditions.users.includeGroups = $InclusionGroupsGuids
     }
-    If ($ExclusionGroupsGuids){
-    $PolicyPs.conditions.users.excludeGroups = $ExclusionGroupsGuids
+    If ($ExclusionGroupsGuids) {
+        $PolicyPs.conditions.users.excludeGroups = $ExclusionGroupsGuids
     }
-    If ($InclusionUsersGuids){ 
+    If ($InclusionUsersGuids) { 
         $PolicyPs.conditions.users.includeUsers = $InclusionUsersGuids
     }
-    If ($ExclusionUsersGuids){ 
-    $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
+    If ($ExclusionUsersGuids) { 
+        $PolicyPs.conditions.users.ExcludeUsers = $ExclusionUsersGuids
     }
-    If ($inclusionApplicationGuids){ 
-    $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
+    If ($inclusionApplicationGuids) { 
+        $PolicyPs.conditions.applications.includeApplications = $InclusionApplicationGuids
     }
-    If ($ExclusionApplicationGuids){ 
-    $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
+    If ($ExclusionApplicationGuids) { 
+        $PolicyPs.conditions.applications.excludeApplications = $ExclusionApplicationGuids
     }
-    If ($InclusionRoleGuids){ 
+    If ($InclusionRoleGuids) { 
         $PolicyPs.conditions.users.includeRoles = $InclusionRoleGuids
     } 
-    If ($ExclusionRoleGuids){ 
+    If ($ExclusionRoleGuids) { 
         $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
     }
-        
+    
+    #If ID and creation date, set to null
+    If ($PolicyPs.id) {
+        $policyPS.psobject.Properties.remove('id')
+    }
+    if ($PolicyPs.createdDateTime) {
+        $PolicyPS.createdDateTime = $null
+    }
+    if ($PolicyPs.modifiedDateTime) {
+        $PolicyPS.modifiedDateTime = $null
+    }
+
     #Converts Powershell-Object with new Configuration back to Json
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json -depth 3
     #Create new Policy using Graph
