@@ -65,7 +65,6 @@ function New-ConditionalAccessPolicy {
         $PolicyJson = Get-content -path $PolicyFile -raw 
     }
     
-    $PolicyJSON = Get-Content -Path "C:\Source\VSTS\GitHub\ConditionalAccess\Examples\Policy\A\CA-01- All Apps - All Admins - Require MFA.json"
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
     
