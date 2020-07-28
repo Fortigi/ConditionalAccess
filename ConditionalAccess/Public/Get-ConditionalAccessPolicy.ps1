@@ -57,6 +57,8 @@ function Get-ConditionalAccessPolicy {
         Foreach ($Policy in $Policies) {
             [Array]$InclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
             [Array]$ExclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
+            [array]$InclusionUsersUserPrincipleNames = ConvertFrom-UserGUIDToUserPrincipalName -UserGUIDs ($Policy.conditions.users.includeUsers) -AccessToken $AccessToken 
+            [array]$ExclusionUsersUserPrincipleNames = ConvertFrom-UserGUIDToUserPrincipalName -UserGUIDs ($Policy.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
             [array]$InclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.includeGroups) -AccessToken $AccessToken
             [array]$ExclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.excludeGroups) -AccessToken $AccessToken
             [array]$InclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.includeRoles) -AccessToken $AccessToken 
@@ -67,6 +69,12 @@ function Get-ConditionalAccessPolicy {
             }
             If ($ExclusionApplicationDisplayNames) { 
                 $Policy.conditions.applications.excludeApplications = $ExclusionApplicationDisplayNames
+            }
+            If ($InclusionUsersUserPrincipleNames) { 
+                $Policy.conditions.users.includeUsers = $InclusionUsersUserPrincipleNames
+            }
+            If ($ExclusionUsersUserPrincipleNames) { 
+                $Policy.conditions.users.ExcludeUsers = $ExclusionUsersUserPrincipleNames
             }
             If ($InclusionGroupsDisplayNames) {
                 $Policy.conditions.users.includeGroups = $InclusionGroupsDisplayNames
