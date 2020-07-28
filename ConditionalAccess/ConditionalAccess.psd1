@@ -30,7 +30,7 @@
     Copyright         = '(c) 2020 Fortigi.'
 
     # Description of the functionality provided by this module
-    Description = 'This module allows you to manage Conditional Access Policy from PowerShell. Is uses the Microsoft Grap API. For more info support@fortigi.nl'
+    Description = 'This module allows you to manage Conditional Access Policy from PowerShell. Is uses the Microsoft Grap API. For more info https://github.com/Fortigi/ConditionalAccess'
 
     # Minimum version of the Windows PowerShell engine required by this module
     # PowerShellVersion = ''
@@ -70,7 +70,7 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @('Get-AccessToken', 'New-ConditionalAccessPolicy', 'Remove-ConditionalAccessPolicy', 'Get-ConditionalAccessPolicy','Get-ConditionalAccessPolicyFile')
+    FunctionsToExport = @('Get-AccessToken', 'New-ConditionalAccessPolicy', 'Remove-ConditionalAccessPolicy', 'Get-ConditionalAccessPolicy','Get-ConditionalAccessPolicyFile','Set-ConditionalAccessPolicy')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
