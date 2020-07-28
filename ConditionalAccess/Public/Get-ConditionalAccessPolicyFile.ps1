@@ -21,7 +21,7 @@ function Get-ConditionalAccessPolicyFile {
         
         #Check for characters that can't be used in filenames
         $FileName = ($Policy.displayName + ".json").Replace(":","").Replace("\","")
-        $Json = $Policy | ConvertTo-Json 
+        $Json = $Policy | ConvertTo-Json -Depth 3
         $Json | Out-file ($Path + "\" + $FileName)
         }
 }

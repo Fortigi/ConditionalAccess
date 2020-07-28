@@ -1,5 +1,5 @@
 function Get-ConditionalAccessPolicy {
-        <#
+    <#
     .SYNOPSIS
     The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant.
     
@@ -54,23 +54,33 @@ function Get-ConditionalAccessPolicy {
         #User GUIDs to UPS
 
         #Application GUIDs to DisplayName
-        Foreach ($Policy in $Policies){
+        Foreach ($Policy in $Policies) {
             [Array]$InclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
             [Array]$ExclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
-            [array]$InclusionGroupsDisplayNames = ConvertFrom-GroupGuidToDisplayName -GroupGuids ($Policy.conditions.users.includeGroups) -AccessToken $AccessToken
-            [array]$ExclusionGroupsDisplayNames = ConvertFrom-GroupGuidToDisplayName -GroupGuids ($Policy.conditions.users.excludeGroups) -AccessToken $AccessToken
-            If ($InclusionApplicationDisplayNames){ 
+            [array]$InclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.includeGroups) -AccessToken $AccessToken
+            [array]$ExclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.excludeGroups) -AccessToken $AccessToken
+            [array]$InclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.includeRoles) -AccessToken $AccessToken 
+            [array]$ExclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.excludeRoles) -AccessToken $AccessToken 
+
+            If ($InclusionApplicationDisplayNames) { 
                 $Policy.conditions.applications.includeApplications = $InclusionApplicationDisplayNames
-                }
-            If ($ExclusionApplicationDisplayNames){ 
+            }
+            If ($ExclusionApplicationDisplayNames) { 
                 $Policy.conditions.applications.excludeApplications = $ExclusionApplicationDisplayNames
             }
             If ($InclusionGroupsDisplayNames) {
                 $Policy.conditions.users.includeGroups = $InclusionGroupsDisplayNames
-                }
-            If ($ExclusionGroupsDisplayNames){
+            }
+            If ($ExclusionGroupsDisplayNames) {
                 $Policy.conditions.users.excludeGroups = $ExclusionGroupsDisplayNames
-                }
+            }
+            If ($InclusionRoleDisplayNames) { 
+                $Policy.conditions.users.includeRoles = $InclusionRoleDisplayNames
+            } 
+            If ($ExclusionRoleDisplayNames) { 
+                $Policy.conditions.users.excludeRoles = $ExclusionRoleDisplayNames 
+            }
+
         }
 
         #Role GUIDs to DisplayName
