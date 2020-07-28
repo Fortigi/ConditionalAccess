@@ -24,6 +24,10 @@ function Set-ConditionalAccessPolicy {
 
         -Optional permission for automatic group creation 
         Group.Create
+    
+    More info and source code;
+    https://github.com/Fortigi/ConditionalAccess
+
     #>
 
     [cmdletbinding()]

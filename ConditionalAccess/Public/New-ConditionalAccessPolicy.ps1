@@ -25,6 +25,9 @@ function New-ConditionalAccessPolicy {
 
         -Optional permission for automatic group creation 
         Group.Create
+    
+    More info and source code;
+    https://github.com/Fortigi/ConditionalAccess
 
     .Example 
     #Create a new Conditional Access Policy

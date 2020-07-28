@@ -16,6 +16,9 @@ function Get-ConditionalAccessPolicy {
         Group.Read.All
         Policy.Read.All
         Policy.Read.ConditionalAccess
+    
+    More info and source code;
+    https://github.com/Fortigi/ConditionalAccess
 
     .example 
     #Example to get All policies

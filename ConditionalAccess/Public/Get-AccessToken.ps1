@@ -19,6 +19,9 @@ function Get-AccessToken {
         Group.Create
     
     *If you want to use the Token for other purposes you can modify the permissions to your own requirements
+    
+    More info and source code;
+    https://github.com/Fortigi/ConditionalAccess
 
     .example 
     $AccessToken = Get-AccessToken -ClientID xxxx-xxxx-xxxx-xxxx -ClientSecret xxxxxxxxxxxxxxxx -TenantID xxxx-xxxx-xxxx-xxxx
