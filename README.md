@@ -22,6 +22,11 @@ To achieve this, the module contains several private function.
 - ConvertFrom-RoleDisplayNametoGUID
 - ConvertFrom-UserUserPrinicpleNameToGUID
 
+- ConvertFrom-ApplicationGUIDtoDisplayName
+- ConvertFromGroupGUIDToDisplayname
+- ConvertFrom-RoleGUIDtoDisplayName
+- ConvertFrom-UserGUIDtoUserPrincipalName
+
 The private functions convert the human-readable DisplayNames (and UserPrincipalNames) that are stated in the policy files to their respective GUIDs in the target AzureAD tenant. The private functions are sub-functions to the public functions, meaning all the conversions happen in the background. 
 
 
@@ -61,9 +66,9 @@ $ca = Get-ConditionalAccessPolicy -accessToken $AccessToken -DisplayName "CA-01-
 To dissect the content of the created or existing Policy of your choice. e.g. you can run:
 $ca.conditions.users.includeRoles 
 To see that the "All" in the example policy was succesfully translated to a large number of GUIDs of RoleTemplates in the target Tenant. 
-Since $ca gets it information directly from Graph you will see the GUIDs via this way. 
+If you want to see the raw guids from Graph instead of the converted human readable names add -ConvertGUIDs $False. 
 
-We might create a reversed conversion in the nearby future.  
+  
 
 
 
