@@ -1,9 +1,12 @@
 function Get-ConditionalAccessPolicy {
     <#
     .SYNOPSIS
-    The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant.
+    The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant. 
     
     .Description
+    The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant. Depending on the 
+    -ConvertGUIDs parameter, it will automatically convert the non-human readable GUIDs in Graph to human readable Displaynames and UserPrincipalNames. 
+
     Prerequisites
     - App registered in the target Azure Active Directory
     - Valid client secret of the App
@@ -16,7 +19,7 @@ function Get-ConditionalAccessPolicy {
 
     .example 
     #Example to get All policies
-    Get-ConditionalAccessPolicy -AccessToken $AccessToken -All $True
+    Get-ConditionalAccessPolicy -AccessToken $AccessToken
 
     #Example to get a specIfic policy based on DisplayName
     $ConditionalAccessPolicyDisplayName = "CA-01- All Apps - All Admins - Require MFA"

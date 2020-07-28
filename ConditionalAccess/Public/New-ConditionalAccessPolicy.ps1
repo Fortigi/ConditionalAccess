@@ -29,7 +29,7 @@ function New-ConditionalAccessPolicy {
     .Example 
     #Create a new Conditional Access Policy
     $PolicyJson = Get-content -path <YourFile.Json> -raw
-    New-ConditionalAccessPolicy -PolicyJson $PolicyJson -Force -AccessToken $AccessToken
+    New-ConditionalAccessPolicy -PolicyJson $PolicyJson -AccessToken $AccessToken
 
     #Deploy a policy set and create any non existing groups 
     $PolicyFiles = get-childitem <your directory>
