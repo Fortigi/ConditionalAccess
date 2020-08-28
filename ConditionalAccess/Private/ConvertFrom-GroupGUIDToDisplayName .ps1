@@ -30,9 +30,13 @@ function ConvertFrom-GroupGuidToDisplayName {
     Foreach ($GroupGuid In $GroupGuids) {
         $URI = "https://graph.microsoft.com/beta/groups/$GroupGuid"
         $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+        if ($GroupObject.count -gt 1) {
+            Write-Warning "More than one Object was found for DisplayName: $LocationDisplayName"
+          }  
         #Add ID to GroupGuids
-        $Guid = ($GroupObject.displayName)
-        [array]$GroupDisplayNames += $Guid
+        $DisplayName = ($GroupObject.displayName)
+        [array]$GroupDisplayNames += $DisplayName
     }
     Return [array]$GroupDisplayNames
 }
+

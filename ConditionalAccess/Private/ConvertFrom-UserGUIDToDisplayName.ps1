@@ -1,12 +1,12 @@
-function ConvertFrom-UserGUIDToUserPrincipalName {
+function ConvertFrom-UserGUIDToDisplayName {
           <#
     .SYNOPSIS
-    The ConvertFrom-UserGUIDToUserPrincipalName command uses a Token from the "Get-AccessToken" command to convert the [array]UserGuids of Users to their UserPrincipalNames as they exist in the targeted Tenant. 
+    The ConvertFrom-UserGUIDToUserDisplayName command uses a Token from the "Get-AccessToken" command to convert the [array]UserGuids of Users to their DisplayNames as they exist in the targeted Tenant. 
     
     .Description
           
     .Description
-        The command takes the array of UserPrincipalNames of Users from the input in the parameter and checks their existence in the targeted AzureAD tenant. If the UserPrincipalName Exists the GUID is returned
+        The command takes the array of DisplayNames of Users from the input in the parameter and checks their existence in the targeted AzureAD tenant. If the UserDisplayName Exists the GUID is returned
         And added to the UserGUIDs array. 
 
     Prerequisites
@@ -16,7 +16,7 @@ function ConvertFrom-UserGUIDToUserPrincipalName {
 
     .Example 
     [array]$UserGuids = "william@fortigi.nl"
-    ConvertFrom-UserGUIDToUserPrincipalName -UserGuids $UserGuids -AccessToken $AccessToken
+    ConvertFrom-UserGUIDToUserDisplayName -UserGuids $UserGuids -AccessToken $AccessToken
     #>
     
     Param
@@ -27,7 +27,7 @@ function ConvertFrom-UserGUIDToUserPrincipalName {
         $AccessToken 
     )
     
-    [array]$UserUserPrincipalNames = $null
+    [array]$UserDisplayNames = $null
 
     Foreach ($Userguid in $UserGuids) {
 
@@ -37,12 +37,12 @@ function ConvertFrom-UserGUIDToUserPrincipalName {
             If (!$UserObject) {
                 Throw "User: $Userguid specified in the Policy was not found in the directory. Create user, or update your policy."
             }  
-            $UserUserPrincipalNames += ($UserObject.UserPrincipalName)
+            $UserDisplayNames += ($UserObject.DisplayName)
         }
     Else {
-        $UserUserPrincipalNames = $null
-        $UserUserPrincipalNames += "All"
+        $UserDisplayNames = $null
+        $UserDisplayNames += "All"
     }
 }
-    Return $UserUserPrincipalNames
+    Return $UserDisplayNames
 }

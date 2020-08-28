@@ -5,7 +5,7 @@ function Get-ConditionalAccessPolicy {
     
     .Description
     The Get-ConditionalAccessPolicy command uses a Token from the "Get-AccessToken" command to get some or all of the Conditional Access policies in the targeted AzureAD tenant. Depending on the 
-    -ConvertGUIDs parameter, it will automatically convert the non-human readable GUIDs in Graph to human readable Displaynames and UserPrincipalNames. 
+    -ConvertGUIDs parameter, it will automatically convert the non-human readable GUIDs in Graph to human readable Displaynames.
 
     Prerequisites
     - App registered in the target Azure Active Directory
@@ -56,19 +56,19 @@ function Get-ConditionalAccessPolicy {
 
     If ($ConvertGUIDs -eq $True) {
 
-        #Groups GUIDS to DisplayName
-        #User GUIDs to UPS
-
-        #Application GUIDs to DisplayName
+        #Guids from GUID to DisplayName
         Foreach ($Policy in $Policies) {
             [Array]$InclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.includeApplications) -AccessToken $AccessToken 
             [Array]$ExclusionApplicationDisplayNames = ConvertFrom-ApplicationGUIDToDisplayName -ApplicationGuids ($Policy.conditions.applications.excludeApplications) -AccessToken $AccessToken 
-            [array]$InclusionUsersUserPrincipleNames = ConvertFrom-UserGUIDToUserPrincipalName -UserGUIDs ($Policy.conditions.users.includeUsers) -AccessToken $AccessToken 
-            [array]$ExclusionUsersUserPrincipleNames = ConvertFrom-UserGUIDToUserPrincipalName -UserGUIDs ($Policy.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
+            [array]$InclusionUsersDisplayNames = ConvertFrom-UserGUIDToDisplayName -UserGUIDs ($Policy.conditions.users.includeUsers) -AccessToken $AccessToken 
+            [array]$ExclusionUsersDisplayNames = ConvertFrom-UserGUIDToDisplayName -UserGUIDs ($Policy.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
             [array]$InclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.includeGroups) -AccessToken $AccessToken
             [array]$ExclusionGroupsDisplayNames = ConvertFrom-GroupGUIDToDisplayName -GroupGuids ($Policy.conditions.users.excludeGroups) -AccessToken $AccessToken
             [array]$InclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.includeRoles) -AccessToken $AccessToken 
             [array]$ExclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.excludeRoles) -AccessToken $AccessToken 
+            [array]$InclusionLocationDisplayNames = ConvertFrom-LocationGUIDToDisplayName -LocationGuids ($Policy.conditions.locations.includeLocations) -AccessToken $AccessToken 
+            [array]$ExclusionLocationDisplayNames = ConvertFrom-LocationGUIDtoDisplayName -LocationGuids ($Policy.conditions.locations.excludeLocations) -AccessToken $AccessToken 
+
 
             If ($InclusionApplicationDisplayNames) { 
                 $Policy.conditions.applications.includeApplications = $InclusionApplicationDisplayNames
@@ -76,11 +76,11 @@ function Get-ConditionalAccessPolicy {
             If ($ExclusionApplicationDisplayNames) { 
                 $Policy.conditions.applications.excludeApplications = $ExclusionApplicationDisplayNames
             }
-            If ($InclusionUsersUserPrincipleNames) { 
-                $Policy.conditions.users.includeUsers = $InclusionUsersUserPrincipleNames
+            If ($InclusionUsersDisplayNames) { 
+                $Policy.conditions.users.includeUsers = $InclusionUsersDisplayNames
             }
-            If ($ExclusionUsersUserPrincipleNames) { 
-                $Policy.conditions.users.ExcludeUsers = $ExclusionUsersUserPrincipleNames
+            If ($ExclusionUsersDisplayNames) { 
+                $Policy.conditions.users.ExcludeUsers = $ExclusionUsersDisplayNames
             }
             If ($InclusionGroupsDisplayNames) {
                 $Policy.conditions.users.includeGroups = $InclusionGroupsDisplayNames
@@ -93,6 +93,12 @@ function Get-ConditionalAccessPolicy {
             } 
             If ($ExclusionRoleDisplayNames) { 
                 $Policy.conditions.users.excludeRoles = $ExclusionRoleDisplayNames 
+            }
+            If ($InclusionLocationDisplayNames) { 
+                $Policy.conditions.locations.includeLocations = $InclusionLocationDisplayNames 
+            }
+            If ($ExclusionLocationDisplayNames) { 
+                $Policy.conditions.locations.excludeLocations = $ExclusionLocationDisplayNames 
             }
 
         }

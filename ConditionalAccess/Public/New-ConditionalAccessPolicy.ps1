@@ -9,7 +9,7 @@ function New-ConditionalAccessPolicy {
 
     In order to allow for more flexibility rolling out the exact same JSONS to dIfferent Tenants while maintaining the readability of the JSON policy files:
     - The "DisplayNames" of "Groups", Roles and "Applications" are automatically translated to their respective ObjectIDs (GUIDs) as they are found in the targeted Tenant in the background. 
-    - The "UserPrincipalNames" of "Users" are automatically translated to their respective ObjectIDs (GUIDs) as they are found the targeted Tenant in the background.
+    - The "DisplayName" of "Users" are automatically translated to their respective ObjectIDs (GUIDs) as they are found the targeted Tenant in the background.
 
     The -CreateMissingGroups Paramter can be added to automatically create "Groups" based on the displayNames found in the JSON If no correlating "Groups" are found in the target tenant.  
 
@@ -75,24 +75,24 @@ function New-ConditionalAccessPolicy {
         }
         
     }
-
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
-    
-    
-    
+        
     #Get GUIDs for the DisplayNames of the Groups from the Powershell-representation of the JSON, from AzureAD through use of Microsoft Graph. 
     [array]$InclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.includeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups
     [array]$ExclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.excludeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups
-    #Get GUIDs for the UserPrincipalNames of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
-    [array]$InclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.includeUsers) -AccessToken $AccessToken 
-    [array]$ExclusionUsersGuids = ConvertFrom-UserUserPrinicpleNameToGUID -UserUserPrincipalNames ($PolicyPs.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
+    #Get GUIDs for the DisplayName of the Users from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
+    [array]$InclusionUsersGuids = ConvertFrom-UserDisplayNameToGUID -UserDisplayNames ($PolicyPs.conditions.users.includeUsers) -AccessToken $AccessToken 
+    [array]$ExclusionUsersGuids = ConvertFrom-UserDisplayNameToGUID -UserDisplayNames ($PolicyPs.conditions.users.ExcludeUsers) -AccessToken $AccessToken 
     #Get GUIDs for the DisplayName of the Application from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
     [array]$InclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -ApplicationDisplayNames ($PolicyPs.conditions.applications.includeApplications) -AccessToken $AccessToken 
     [array]$ExclusionApplicationGuids = ConvertFrom-ApplicationDisplayNametoGUID -ApplicationDisplayNames ($PolicyPs.conditions.applications.excludeApplications) -AccessToken $AccessToken 
-    #Get GUIDs for the RoleDisplayName of the Roles from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
+    #Get GUIDs for the DisplayName of the Roles from the Powershell representation of the JSON, from AzureAD through use of Microsoft Graph.
     [array]$InclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.includeRoles) -AccessToken $AccessToken 
     [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.excludeRoles) -AccessToken $AccessToken 
+    #Get GUIDs for the DisplayName of the Locations from the Powershell representation of the JSON, from AzureAD through the use of Microsoft Graph. 
+    [array]$InclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
+    [array]$ExclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
     If ($InclusionGroupsGuids) {
@@ -119,6 +119,13 @@ function New-ConditionalAccessPolicy {
     If ($ExclusionRoleGuids) { 
         $PolicyPs.conditions.users.excludeRoles = $ExclusionRoleGuids 
     }
+    If ($InclusionLocationGuids) { 
+        $PolicyPs.conditions.locations.includeLocations = $InclusionLocationGuids
+    } 
+    If ($ExclusionLocationGuids) { 
+        $PolicyPs.conditions.locations.excludeLocations = $ExclusionLocationGuids 
+    }
+
     
     #If ID and creation date, set to null
     If ($PolicyPs.id) {
