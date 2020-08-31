@@ -31,30 +31,39 @@ ConvertFrom-LocationGUIDToDisplayName -LocationGuids $LocationGuids -AccessToken
 
   Foreach ($Locationguid in $LocationGuids) {
 
-    If ($Locationguid.ToString().ToLower() -ne "all") {
-      If ($Locationguid.ToString().ToLower() -ne "alltrusted") { 
-        If ($Locationguid -ne "00000000-0000-0000-0000-000000000000") {
-          $URI = "https://graph.microsoft.com/beta/identity/conditionalAccess/namedLocations/$Locationguid"
+    $Locationguid = $Locationguid.ToString().ToLower()
+
+    switch ($Locationguid) {
+
+      #All locations
+      "all" {
+        $LocationDisplayNames = $null
+        $LocationDisplayNames += "All"
+      }
+      
+      #All trusted locations
+      "alltrusted" {
+        $LocationDisplayNames = $null
+        $LocationDisplayNames += "AllTrusted"
+      }
+      
+      #This option is not supported by Graph
+      "00000000-0000-0000-0000-000000000000" {
+        Write-Warning -Message "The MFA Trusted IPs selection is not yet supported via graph, please update policy to select the corresponding locations individually"
+      }
+      
+      #All other locations.
+      default {
+        $URI = "https://graph.microsoft.com/beta/identity/conditionalAccess/namedLocations/$Locationguid"
           $LocationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
           If (!$LocationObject) {
             Throw "Location: $Locationguid specified in the Policy was not found in the directory. Create Location, or update your policy."
           }  
           $LocationDisplayNames += $LocationObject.DisplayName
-        }
       }
     }
-    if ($Locationguid.ToString().ToLower() -eq "all") {
-      $LocationDisplayNames = $null
-      $LocationDisplayNames += "All"
-    } 
-    if ($Locationguid.ToString().ToLower() -eq "alltrusted") {
-      $LocationDisplayNames = $null
-      $LocationDisplayNames += "AllTrusted"
-    }
-    #If ($Locationguid -eq "00000000-0000-0000-0000-000000000000"){
-    #Throw "The MFA Trusted IPs selection is not yet supported via graph, please update policy to select the corresponding locations individually"
-  #}
+  }
+  
   Return $LocationDisplayNames
-}
 }
 
