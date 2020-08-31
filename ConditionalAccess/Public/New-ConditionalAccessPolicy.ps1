@@ -92,7 +92,7 @@ function New-ConditionalAccessPolicy {
     [array]$ExclusionRoleGuids = ConvertFrom-RoleDisplayNametoGUID -RoleDisplayNames ($PolicyPs.conditions.users.excludeRoles) -AccessToken $AccessToken 
     #Get GUIDs for the DisplayName of the Locations from the Powershell representation of the JSON, from AzureAD through the use of Microsoft Graph. 
     [array]$InclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
-    [array]$ExclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
+    [array]$ExclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.ExcludeLocations) -AccessToken $AccessToken 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
     If ($InclusionGroupsGuids) {
