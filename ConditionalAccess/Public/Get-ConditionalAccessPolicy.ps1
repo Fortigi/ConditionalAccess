@@ -38,7 +38,9 @@ function Get-ConditionalAccessPolicy {
         [Parameter(Mandatory = $false)]
         $DisplayName = $false,
         [Parameter(Mandatory = $false)]
-        $ConvertGUIDs = $True  
+        $ConvertGUIDs = $True,  
+        [Parameter(Mandatory = $false)]
+        $PathConvertFile 
     )
 
     If ($Id) {
@@ -68,6 +70,7 @@ function Get-ConditionalAccessPolicy {
             [array]$ExclusionRoleDisplayNames = ConvertFrom-RoleGUIDtoDisplayName -RoleGuids ($Policy.conditions.users.excludeRoles) -AccessToken $AccessToken 
             [array]$InclusionLocationDisplayNames = ConvertFrom-LocationGUIDToDisplayName -LocationGuids ($Policy.conditions.locations.includeLocations) -AccessToken $AccessToken 
             [array]$ExclusionLocationDisplayNames = ConvertFrom-LocationGUIDtoDisplayName -LocationGuids ($Policy.conditions.locations.excludeLocations) -AccessToken $AccessToken 
+            [array]$AgreementDisplayNames = ConvertFrom-AgreementGUIDToDisplayName -AgreementGuids ($Policy.grantControls.termsOfUse) -AccessToken $AccessToken -PathConvertFile $PathConvertFile 
 
 
             If ($InclusionApplicationDisplayNames) { 
@@ -99,6 +102,9 @@ function Get-ConditionalAccessPolicy {
             }
             If ($ExclusionLocationDisplayNames) { 
                 $Policy.conditions.locations.excludeLocations = $ExclusionLocationDisplayNames 
+            }
+            If ($AgreementDisplayNames) { 
+                $Policy.grantControls.termsOfUse = $AgreementDisplayNames 
             }
 
         }

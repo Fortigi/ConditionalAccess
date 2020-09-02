@@ -1,0 +1,17 @@
+{
+    "TermsOfUse": [
+        {
+            "DisplayName": "YourTermsofUse",
+            "Tenant": [
+                {
+                    "TenantName": "YourTenant51.onmicrosoft.com",
+                    "TermsOfUseObjectID": "71cfc9a9-819c-4ae2-9e90-85a1c83e7554"
+                },
+                {
+                    "TenantName": "YourOtherTenant52.onmicrosoft.com",
+                    "TermsOfUseObjectID": "c13852f1-9411-4759-a13b-9859dc604d94"
+                }
+            ]
+        }
+    ]
+}

@@ -61,6 +61,9 @@ function Set-ConditionalAccessPolicy {
     #Get GUIDs for the DisplayName of the Locations from the Powershell representation of the JSON, from AzureAD through the use of Microsoft Graph. 
     [array]$InclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
     [array]$ExclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.excludeLocations) -AccessToken $AccessToken 
+    #Get GUIds for the DisplayName of TermsofUse (Agreement-object) in the targeted tenant. The Convert.Json file to function since Graph does not support this functionality yet. 
+    [array]$AgreementGuids = ConvertFrom-AgreementDisplayNameToGUID -AgreementDisplayNames ($PolicyPS.grantControls.termsOfUse) -AccessToken $AccessToken -PathConvertFile $PathConvertFile -TargetTenant $TargetTenant
+
    
      #Convert the Displaynames in the Powershell-object to the GUIDs.  
     If ($InclusionGroupsGuids) {
@@ -92,6 +95,9 @@ function Set-ConditionalAccessPolicy {
     } 
     If ($ExclusionLocationGuids) { 
         $PolicyPs.conditions.locations.excludeLocations = $ExclusionLocationGuids 
+    }
+    If ($AgreementGuids) { 
+        $PolicyPS.grantControls.termsOfUse = $AgreementGuids 
     }
     
     #Converts includeGroups and excludeGroups configuration in JSON from displayName to GUID.

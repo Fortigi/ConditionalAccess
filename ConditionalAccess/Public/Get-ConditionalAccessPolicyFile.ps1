@@ -11,11 +11,13 @@ function Get-ConditionalAccessPolicyFile {
         [Parameter(Mandatory = $false)]
         $DisplayName = $false,
         [Parameter(Mandatory = $false)]
-        $ConvertGUIDs = $true
+        $ConvertGUIDs = $true,
+        [Parameter(Mandatory = $false)]
+        $PathConvertFile 
         
     )
     
-    [Array]$Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -DisplayName $DisplayName -Id $Id -ConvertGUIDs $ConvertGUIDs
+    [Array]$Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken -DisplayName $DisplayName -Id $Id -ConvertGUIDs $ConvertGUIDs -PathConvertFile $PathConvertFile
 
     Foreach ($Policy in $Policies) {
         
