@@ -58,6 +58,7 @@ function New-ConditionalAccessPolicy {
         [ValidateNotNullOrEmpty()]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         $PolicyFile,
+
         [Parameter(Mandatory = $False)]
         [System.Boolean]$CreateMissingGroups,  
 
@@ -68,22 +69,28 @@ function New-ConditionalAccessPolicy {
         $PathConvertFile,
 
         [Parameter(Mandatory = $False)]
-        $targetTenant
+        $TargetTenantName
     )
+
+    If ($PathConvertFile) {
+        If (!($TargetTenantName)) {
+            Throw "When specifying a ConvertFile you also need to specify the TargetTenantName variable."
+        }
+    }
 
     If ($PolicyFile) {
         $PolicyJson = Get-content -path $PolicyFile -raw 
     }
 
-    if ($TestOnly -eq $True){
-        if ($CreateMissingGroups -eq $true){
+    if ($TestOnly -eq $True) {
+        if ($CreateMissingGroups -eq $true) {
             Throw "Combination of CreateMissingGroup Parameter and TestOnly Parameter cannot both be true."
         }
         
     }
     #Convert JSON to Powershell
     $PolicyPS = $PolicyJson | convertFrom-Json
-        
+       
     #Get GUIDs for the DisplayNames of the Groups from the Powershell-representation of the JSON, from AzureAD through use of Microsoft Graph. 
     [array]$InclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.includeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups
     [array]$ExclusionGroupsGuids = ConvertFrom-GroupDisplayNameToGUID -GroupDisplayNames ($PolicyPs.conditions.users.excludeGroups) -AccessToken $AccessToken -CreateMissingGroups $CreateMissingGroups
@@ -100,7 +107,7 @@ function New-ConditionalAccessPolicy {
     [array]$InclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.includeLocations) -AccessToken $AccessToken 
     [array]$ExclusionLocationGuids = ConvertFrom-LocationDisplayNameToGUID -LocationDisplayNames ($PolicyPs.conditions.locations.ExcludeLocations) -AccessToken $AccessToken 
     #Get GUIds for the DisplayName of TermsofUse (Agreement-object) in the targeted tenant. The Convert.Json file to function since Graph does not support this functionality yet. 
-    [array]$AgreementGuids = ConvertFrom-AgreementDisplayNameToGUID -AgreementDisplayNames ($PolicyPS.grantControls.termsOfUse) -AccessToken $AccessToken -PathConvertFile $PathConvertFile -TargetTenant $TargetTenant
+    [array]$AgreementGuids = ConvertFrom-AgreementDisplayNameToGUID -AgreementDisplayNames ($PolicyPS.grantControls.termsOfUse) -AccessToken $AccessToken -PathConvertFile $PathConvertFile -TargetTenantName $TargetTenantName
 
    
     #Convert the Displaynames in the Powershell-object to the GUIDs.  
@@ -153,12 +160,14 @@ function New-ConditionalAccessPolicy {
     #Converts Powershell-Object with new Configuration back to Json
     $ConvertedPolicyJson = $PolicyPS | ConvertTo-Json -depth 3
     #Create new Policy using Graph
-    If($TestOnly -eq $False){
-    $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
-    $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Post -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
-    $conditionalAccessPolicyResponse 
+    If ($TestOnly -eq $False) {
+        $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
+        $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Post -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" } -Body $ConvertedPolicyJson -ContentType "application/json"
+        $conditionalAccessPolicyResponse 
     }
-    Else{Write-Warning -Message ("TestOnly was set, Policy: "+$PolicyPs.displayName+ " was not created. If no error was shown, Policy would have been succesfully created.")}
+    Else { 
+        Write-Host ("TestOnly was set, Policy: " + $PolicyPs.displayName + " was not created. If no error was shown, Policy would have been succesfully created.") -ForegroundColor Green
+    }
 }
 
 

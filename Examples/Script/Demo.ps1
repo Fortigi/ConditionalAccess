@@ -15,46 +15,31 @@
 
 Import-Module .\ConditionalAccess\ConditionalAccess.psm1 -Force
 
-$TenantId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-$ClientId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-$ClientSecret = "aA_aAaa12A1A1aaAa_a~aAA_1A-AAaaaaaaa" 
 
+#PorIAMDEV
+$TargetTenantName = "xxxxx.onmicrosoft.com"
+$TenantId = "xxxxxxx"
+$ClientId = "xxxxxxxx"
+$ClientSecret = "xxxxxxxxx"
+
+
+$PathConvertFile = ".\Examples\Policy\Convert.Json"
+$PolicyFileLocation = ".\Examples\Policy\Policies"
+
+#Get Policies from Azure
 $AccessToken = Get-AccessToken -ClientId $ClientId -TenantId $TenantId -ClientSecret $ClientSecret
+Get-ConditionalAccessPolicyFile -AccessToken $AccessToken -Path $PolicyFileLocation -PathConvertFile $PathConvertFile 
 
-
-################################################################################################################################
-#Example 1; Download existing Conditional Access Policies
-################################################################################################################################
-
-#Get Existing Policies.. in Json Format
-$Policies = Get-ConditionalAccessPolicy -AccessToken $AccessToken
-
-#Export existing policies to JSON files
-Get-ConditionalAccessPolicyFile -AccessToken $AccessToken -Path .\Examples\Policy\Temp
-
-
-################################################################################################################################
-#Example 2; Upload policy
-################################################################################################################################
-
-#Upload a new policy, Be sure to adjust the demo file with the correct displayNames to avoid errors. 
-$File = ".\Examples\Policy\CA-01- All Apps - All Admins - Require MFA.json"
-New-ConditionalAccessPolicy -AccessToken $AccessToken -PolicyFile $File
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#Deploy Policies to Azure
+Deploy-ConditionalAccessPolicies -TargetTenantName $TargetTenantName `
+    -TenantId $TenantId `
+    -ClientId $ClientId `
+    -ClientSecret $ClientSecret `
+    -PolicyFileLocation $PolicyFileLocation `
+    -PathConvertFile $PathConvertFile `
+    -TestOnly $true `
+    -Overwrite $true `
+    -RemoveExisting $true
 
 
 

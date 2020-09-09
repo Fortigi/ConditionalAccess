@@ -52,6 +52,7 @@ function ConvertFrom-ApplicationGUIDToDIsplayName {
         If (!$DontSearchGraph){
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=appId eq '$ApplicationGuid'"
             $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            Start-Sleep -Seconds 1
             
             If (!$ApplicationObject.value) {
                 Throw "Application: $ApplicationGuid specified in policy was not found."

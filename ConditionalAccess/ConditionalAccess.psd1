@@ -12,7 +12,7 @@
     RootModule        = 'ConditionalAccess.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.0.2020.09.09'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()

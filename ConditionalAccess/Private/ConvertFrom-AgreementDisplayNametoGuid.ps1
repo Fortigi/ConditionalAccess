@@ -23,10 +23,10 @@ function ConvertFrom-AgreementDisplayNameToGUID {
         [array]$AgreementDisplayNames,
         [Parameter(Mandatory = $true)]
         $AccessToken,
-        [parameter(mandatory = $false)]
+        [parameter(mandatory = $true)]
         $PathConvertFile,
-        [parameter(mandatory = $false)]
-        $TargetTenant
+        [parameter(mandatory = $true)]
+        $TargetTenantName
     )
 
     [array]$AgreementGuids = $null  
@@ -39,12 +39,12 @@ function ConvertFrom-AgreementDisplayNameToGUID {
             Throw "Please give the correct path for the Convert.Json file in order to convert TermsOfUse DisplayName to their corresponding GUIDs"
         }
         $Guid = $null
-        $Guid = $ConvertFile.termsofuse.tenant | where-object { $_.tenantname -eq $TargetTenant } 
+        $Guid = $ConvertFile.termsofuse.tenant | where-object { $_.tenantname -eq $TargetTenantName } 
         If ($guid) {
             $AgreementGuids += $guid.TermsOfUseObjectID
         }
         if (!$Guid) {
-            Throw "Mismatch between TargetTenant input and TenantName in JsonFile"
+            Throw "Mismatch between TargetTenantName input and TenantName in JsonFile"
         }
     }
     Return $AgreementGuids

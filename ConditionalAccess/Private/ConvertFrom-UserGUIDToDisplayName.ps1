@@ -33,7 +33,9 @@ function ConvertFrom-UserGUIDToDisplayName {
 
         If ($Userguid.ToString().ToLower() -ne "all") {
             $URI = "https://graph.microsoft.com/beta/users/$Userguid"
-            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+            Start-Sleep -Seconds 1
+            
             If (!$UserObject) {
                 Throw "User: $Userguid specified in the Policy was not found in the directory. Create user, or update your policy."
             }  

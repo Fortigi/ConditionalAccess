@@ -28,7 +28,9 @@ function ConvertFrom-RoleGUIDtoDisplayName {
 
     #Get RoleTemplate Objects from Graph
     $URI = "https://graph.microsoft.com/beta/directoryRoletemplates"
-    $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+    $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+    Start-Sleep -Seconds 1
+
     [array]$Roles = $RoleTemplates.value
 
     #For each in Policy File stated Role (DisplayName), attempt to map ObjectIDs based on Matching DisplayNames.    
@@ -44,6 +46,8 @@ function ConvertFrom-RoleGUIDtoDisplayName {
         Else {
             $URI = "https://graph.microsoft.com/beta/directoryRoles?" + '$filter' + "=displayName eq '$RoleDisplayName'"
             $RoleObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            Start-Sleep -Seconds 1
+            
             If (!$RoleObject.value) {
                 Throw "Role $RoleGuid is not found as RoleTemplate or DirectoryRole."
             }

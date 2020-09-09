@@ -53,7 +53,7 @@ function Get-ConditionalAccessPolicy {
         $conditionalAccessURI = "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
     }
     $conditionalAccessPolicyResponse = Invoke-RestMethod -Method Get -Uri $conditionalAccessURI -Headers @{"Authorization" = "Bearer $AccessToken" }
-    
+
     [Array]$Policies = $conditionalAccessPolicyResponse.value    
 
     If ($ConvertGUIDs -eq $True) {
