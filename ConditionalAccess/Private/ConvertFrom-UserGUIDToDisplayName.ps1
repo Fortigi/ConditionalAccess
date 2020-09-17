@@ -31,11 +31,9 @@ function ConvertFrom-UserGUIDToDisplayName {
 
     Foreach ($Userguid in $UserGuids) {
 
-        If ($Userguid.ToString().ToLower() -ne "all") {
+        If ($Userguid -match '(?im)^[{(]?[0-9A-F]{8}[-]?(?:[0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$' ) {
             $URI = "https://graph.microsoft.com/beta/users/$Userguid"
-            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
-            Start-Sleep -Seconds 1
-            
+            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
             If (!$UserObject) {
                 Throw "User: $Userguid specified in the Policy was not found in the directory. Create user, or update your policy."
             }  
@@ -43,8 +41,9 @@ function ConvertFrom-UserGUIDToDisplayName {
         }
     Else {
         $UserDisplayNames = $null
-        $UserDisplayNames += "All"
+        $UserDisplayNames += $Userguid.ToString()
     }
+
 }
     Return $UserDisplayNames
 }
