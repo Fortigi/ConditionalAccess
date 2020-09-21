@@ -32,6 +32,8 @@ function ConvertFrom-GroupDisplayNameToGUID {
     Foreach ($GroupDisplayName In $GroupDisplayNames) {
         $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
         $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+        Start-Sleep -Seconds 1
+
         If (!$GroupObject.value) {
             If ($CreateMissingGroups -ne $true ) { 
                 Throw "The group specified in the policy JSON could not be found in AzureAD. Group Displayname: $GroupDisplayName. Use -Force paramater to auto create groups."
@@ -72,7 +74,8 @@ function ConvertFrom-GroupDisplayNameToGUID {
                 #Fill GroupObject with the newly created group
                 $URI = "https://graph.microsoft.com/beta/groups?" + '$filter' + "=displayName eq '$GroupDisplayName'"
                 $GroupObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
-
+                Start-Sleep -Seconds 1
+                
                 If ($GroupObject) {
                     Write-host "Success" -ForegroundColor Green
                 }

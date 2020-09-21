@@ -33,7 +33,9 @@ function ConvertFrom-UserDisplayNameToGUID {
 
         If ($UserDisplayName.ToString().ToLower() -ne "all") {
             $URI = "https://graph.microsoft.com/beta/users?" + '$filter' + "=DisplayName eq '$UserDisplayName'"
-            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            $UserObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+            Start-Sleep -Seconds 1
+            
             If (!$UserObject.value) {
                 Throw "User: $UserDisplayName specified in the Policy was not found in the directory. Create user, or update your policy."
             }  

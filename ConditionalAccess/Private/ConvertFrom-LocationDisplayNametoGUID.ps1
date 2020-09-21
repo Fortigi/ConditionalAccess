@@ -33,7 +33,8 @@ Foreach ($LocationDisplayName in $LocationDisplayNames) {
 
   If ($LocationDisplayName.ToString().ToLower() -ne "all") {
       $URI = "https://graph.microsoft.com/beta/identity/conditionalAccess/namedLocations?" + '$filter' + "=DisplayName eq '$LocationDisplayName'"
-      $LocationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+      $LocationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+      Start-Sleep -Seconds 1 
       If (!$LocationObject.value) {
           Throw "Location: $LocationDisplayName specified in the Policy was not found in the directory. Create Location, or update your policy."
       }

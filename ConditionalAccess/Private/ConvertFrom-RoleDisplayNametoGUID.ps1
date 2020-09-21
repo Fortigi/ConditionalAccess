@@ -29,6 +29,8 @@ function ConvertFrom-RoleDisplayNametoGUID {
     #Get RoleTemplate Objects from Graph
     $URI = "https://graph.microsoft.com/beta/directoryRoletemplates"
     $RoleTemplates = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+    Start-Sleep -Seconds 1
+
     [array]$Roles = $Roletemplates.value
 
     If ($RoleDisplayNames -eq "All"){
@@ -49,7 +51,9 @@ function ConvertFrom-RoleDisplayNametoGUID {
         }
         Else {
             $URI = "https://graph.microsoft.com/beta/directoryRoles?" + '$filter' + "=displayName eq '$RoleDisplayName'"
-            $RoleObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            $RoleObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+            Start-Sleep -Seconds 1
+            
             If (!$RoleObject.value) {
                 Throw "Role $RoleDisplayName is not found."
             }

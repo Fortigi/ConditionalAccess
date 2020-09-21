@@ -51,7 +51,9 @@ function ConvertFrom-ApplicationDisplayNameToGUID {
         #If none of the staticly Converted GUIDs are triggered, search in Graph. 
         If (!$DontSearchGraph){
             $URI = "https://graph.microsoft.com/beta/ServicePrincipals?" + '$filter' + "=displayName eq '$ApplicationDisplayName'"
-            $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" } 
+            $ApplicationObject = Invoke-RestMethod -Method Get -Uri $URI -Headers @{"Authorization" = "Bearer $AccessToken" }
+            Start-Sleep -Seconds 1
+            
             If (!$ApplicationObject.value) {
                 Throw "Application: $ApplicationDisplayName specified in policy was not found."
             }  
