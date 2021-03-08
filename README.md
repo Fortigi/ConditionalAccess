@@ -25,8 +25,7 @@ To achieve this, the module contains several private function.
 - ConvertFrom-AgreementDisplayNametoGUID
 - ConvertFrom-LocationDisplayNametoGUID
 
-
-
+-----
 - ConvertFrom-ApplicationGUIDtoDisplayName
 - ConvertFromGroupGUIDToDisplayname
 - ConvertFrom-RoleGUIDtoDisplayName
