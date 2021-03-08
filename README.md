@@ -12,6 +12,7 @@ The module consists of several public functions and several private functions, o
 - New-ConditionalAccessPolicy     (to create a new Conditional Access Policy using a .Json file as input)
 - Remove-ConditionalAccessPolicy  (to remove an existing Conditional Access Policy)
 - Set-ConditionalAccessPolicy     (to update an existing Conditional Access Policy)
+- Deploy-ConditionalAccessPolicies (to Deploy a set of policies from a directory)
 
 To be in control over Conditional Access and to be able to apply efficient and effective version control, it is important that the .Json representation of the policies is readable by the people maintaining them. Since Microsoft Graph can only process GUIDs in .Json format when creating or updating Policies. The issue surfaced that Microsoft Graph and the people maintaining the policies need different versions of the policy files. 
 To achieve this, the module contains several private function.
@@ -21,11 +22,17 @@ To achieve this, the module contains several private function.
 - ConvertFrom-GroupDisplayNametoGUID
 - ConvertFrom-RoleDisplayNametoGUID
 - ConvertFrom-UserUserPrinicpleNameToGUID
+- ConvertFrom-AgreementDisplayNametoGUID
+- ConvertFrom-LocationDisplayNametoGUID
+
+
 
 - ConvertFrom-ApplicationGUIDtoDisplayName
 - ConvertFromGroupGUIDToDisplayname
 - ConvertFrom-RoleGUIDtoDisplayName
 - ConvertFrom-UserGUIDtoUserPrincipalName
+- ConvertFrom-AgreementGUIDToDisplayName
+- ConvertFrom-LocationGUIDToDisplayName
 
 The private functions convert the human-readable DisplayNames (and UserPrincipalNames) that are stated in the policy files to their respective GUIDs in the target AzureAD tenant. The private functions are sub-functions to the public functions, meaning all the conversions happen in the background. 
 
